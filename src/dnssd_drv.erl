@@ -305,6 +305,14 @@ handle_info({Port, register, {Flags, Name, Type, Domain}},
 		   false -> remove_result(Result, State)
 	       end,
     {noreply, NewState};
+handle_info({Port, query_record, {Flags, _IfIndex, Domain, RType, RClass, RData}},
+	    #state{port = Port} = State) ->
+    Result = {Domain, dns_service_type(RType), dns_service_class(RClass), RData},
+    NewState = case flags_add(Flags) of
+		   true -> add_result(Result, State);
+		   false -> remove_result(Result, State)
+	       end,
+    {noreply, NewState};
 handle_info(Info, State) ->
     error_logger:info_msg(?MODULE_STRING " ~p discarded message: ~p~n",
 			  [ self(), Info]),
@@ -476,6 +484,77 @@ error_msg(?ERR_NATPORTMAPPINGDISABLED) -> "NAT port mapping disabled";
 error_msg(?ERR_NOROUTER) -> "no router";
 error_msg(?ERR_POLLINGMODE) -> "polling mode";
 error_msg(_) -> "undefined".
+
+%% dns-sd.h:kDNSServiceType
+dns_service_type(  1) -> <<"A">>;
+dns_service_type(  2) -> <<"NS">>;
+dns_service_type(  3) -> <<"MD">>;
+dns_service_type(  4) -> <<"MF">>;
+dns_service_type(  5) -> <<"CNAME">>;
+dns_service_type(  6) -> <<"SOA">>;
+dns_service_type(  7) -> <<"MB">>;
+dns_service_type(  8) -> <<"MG">>;
+dns_service_type(  9) -> <<"MR">>;
+dns_service_type( 10) -> <<"NULL">>;
+dns_service_type( 11) -> <<"WKS">>;
+dns_service_type( 12) -> <<"PTR">>;
+dns_service_type( 13) -> <<"HINFO">>;
+dns_service_type( 14) -> <<"MINFO">>;
+dns_service_type( 15) -> <<"MX">>;
+dns_service_type( 16) -> <<"TXT">>;
+dns_service_type( 17) -> <<"RP">>;
+dns_service_type( 18) -> <<"AFSDB">>;
+dns_service_type( 19) -> <<"X25">>;
+dns_service_type( 20) -> <<"ISDN">>;
+dns_service_type( 21) -> <<"RT">>;
+dns_service_type( 22) -> <<"NSAP">>;
+dns_service_type( 23) -> <<"NSAP_PTR">>;
+dns_service_type( 24) -> <<"SIG">>;
+dns_service_type( 25) -> <<"KEY">>;
+dns_service_type( 26) -> <<"PX">>;
+dns_service_type( 27) -> <<"GPOS">>;
+dns_service_type( 28) -> <<"AAAA">>;
+dns_service_type( 29) -> <<"LOC">>;
+dns_service_type( 30) -> <<"NXT">>;
+dns_service_type( 31) -> <<"EID">>;
+dns_service_type( 32) -> <<"NIMLOC">>;
+dns_service_type( 33) -> <<"SRV">>;
+dns_service_type( 34) -> <<"ATMA">>;
+dns_service_type( 35) -> <<"NAPTR">>;
+dns_service_type( 36) -> <<"KX">>;
+dns_service_type( 37) -> <<"CERT">>;
+dns_service_type( 38) -> <<"A6">>;
+dns_service_type( 39) -> <<"DNAME">>;
+dns_service_type( 40) -> <<"SINK">>;
+dns_service_type( 41) -> <<"OPT">>;
+dns_service_type( 42) -> <<"APL">>;
+dns_service_type( 43) -> <<"DS">>;
+dns_service_type( 44) -> <<"SSHFP">>;
+dns_service_type( 45) -> <<"IPSECKEY">>;
+dns_service_type( 46) -> <<"RRSIG">>;
+dns_service_type( 47) -> <<"NSEC">>;
+dns_service_type( 48) -> <<"DNSKEY">>;
+dns_service_type( 49) -> <<"DHCID">>;
+dns_service_type( 50) -> <<"NSEC3">>;
+dns_service_type( 51) -> <<"NSEC3PARAM">>;
+dns_service_type( 55) -> <<"HIP">>;
+dns_service_type( 99) -> <<"SPF">>;
+dns_service_type(100) -> <<"UINFO">>;
+dns_service_type(101) -> <<"UID">>;
+dns_service_type(102) -> <<"GID">>;
+dns_service_type(103) -> <<"UNSPEC">>;
+dns_service_type(249) -> <<"TKEY">>;
+dns_service_type(250) -> <<"TSIG">>;
+dns_service_type(251) -> <<"IXFR">>;
+dns_service_type(252) -> <<"AXFR">>;
+dns_service_type(253) -> <<"MAILB">>;
+dns_service_type(254) -> <<"MAILA">>;
+dns_service_type(255) -> <<"ANY">>;
+dns_service_type(  S) -> integer_to_binary(S).
+
+%% dns-sd.h:kDNSServiceClass
+dns_service_class(1) -> <<"IN">>;
+dns_service_class(C) -> integer_to_binary(C).
 
 %%%===================================================================
 %%% Tests

@@ -289,6 +289,7 @@ ensure_safe_type(_) ->
     {error, bad_type}.
 
 ensure_safe_rtype(<<"TXT">>) -> ok;
+ensure_safe_rtype(<<"txt">>) -> ok;
 ensure_safe_rtype(RType) ->
     {error, {bad_rtype, RType}}.
 
