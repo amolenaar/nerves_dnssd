@@ -43,6 +43,7 @@ typedef struct _dnssd_drv_t {
   ErlDrvTermData term_browse;
   ErlDrvTermData term_resolve;
   ErlDrvTermData term_register;
+  ErlDrvTermData term_query_record;
 #ifdef __WIN32__
   WSAEVENT event;
 #endif
@@ -97,6 +98,18 @@ static void DNSSD_API RegisterReply (DNSServiceRef sd_ref,
 				     const char * domain,
 				     void * context);
 
+static void DNSSD_API QueryRecordReply(DNSServiceRef sdRef,
+				       DNSServiceFlags flags,
+				       uint32_t interfaceIndex,
+				       DNSServiceErrorType err,
+				       const char *fullname,
+				       uint16_t rrtype,
+				       uint16_t rrclass,
+				       uint16_t rdlen,
+				       const void *rdata,
+				       uint32_t ttl,
+				       void *context);
+
 static ErlDrvEntry dnssd_driver_entry = {
     NULL,                             /* init */
     start,                            /* startup */
@@ -137,6 +150,7 @@ static ErlDrvData start(ErlDrvPort port, char* cmd) {
   retval->term_browse = driver_mk_atom("browse");
   retval->term_resolve = driver_mk_atom("resolve");
   retval->term_register = driver_mk_atom("register");
+  retval->term_query_record = driver_mk_atom("query_record");
   return (ErlDrvData) retval;
 }
 
@@ -390,10 +404,12 @@ static ErlDrvSSizeT call(ErlDrvData edd, unsigned int cmd, char *buf,
 				0, // Flags
 				kDNSServiceInterfaceIndexAny,
 				// TODO: tmp
+                                "x4._http._tcp.local",
                                 kDNSServiceType_TXT,
                                 kDNSServiceClass_IN,
                                 (DNSServiceQueryRecordReply) QueryRecordReply,
                                 dd);
+
   } else {
     goto badarg;
   }
@@ -552,6 +568,36 @@ static void DNSSD_API RegisterReply (DNSServiceRef sd_ref,
 			     ERL_DRV_BUF2BINARY, (ErlDrvTermData) regtype, strlen(regtype),
 			     ERL_DRV_BUF2BINARY, (ErlDrvTermData) domain, strlen(domain),
 			     ERL_DRV_TUPLE, 4,
+			     ERL_DRV_TUPLE, 3};
+    erl_drv_output_term(driver_mk_port(dd->erl_port), spec, sizeof(spec) / sizeof(spec[0]));
+  }
+}
+
+static void DNSSD_API QueryRecordReply(DNSServiceRef sdRef,
+				       DNSServiceFlags flags,
+				       uint32_t ifIndex,
+				       DNSServiceErrorType err,
+				       const char *fullname,
+				       uint16_t rrtype,
+				       uint16_t rrclass,
+				       uint16_t rdlen,
+				       const void *rdata,
+				       uint32_t ttl,
+				       void *context)
+{
+  dnssd_drv_t* dd = (dnssd_drv_t*) context;
+  if (err != kDNSServiceErr_NoError) {
+    send_error(context, err);
+  } else {
+    ErlDrvTermData spec[] = {ERL_DRV_PORT, dd->term_port,
+			     ERL_DRV_ATOM, dd->term_query_record,
+			     ERL_DRV_INT, flags,
+			     ERL_DRV_INT, ifIndex,
+			     ERL_DRV_BUF2BINARY, (ErlDrvTermData) fullname, strlen(fullname),
+			     ERL_DRV_UINT, (uint32_t) rrtype,
+			     ERL_DRV_UINT, (uint32_t) rrclass,
+			     ERL_DRV_BUF2BINARY, (ErlDrvTermData) rdata, rdlen,
+			     ERL_DRV_TUPLE, 6,
 			     ERL_DRV_TUPLE, 3};
     erl_drv_output_term(driver_mk_port(dd->erl_port), spec, sizeof(spec) / sizeof(spec[0]));
   }
