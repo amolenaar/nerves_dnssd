@@ -363,6 +363,37 @@ static ErlDrvSSizeT call(ErlDrvData edd, unsigned int cmd, char *buf,
     driver_free(domain_tmp);
     driver_free(host_tmp);
     driver_free(txt_tmp);
+  } else if (cmd == DNSSD_CMD_QUERY_RECORD) {
+
+    //if (!((int)arg.ei_type == ERL_TUPLE) || arg.arity != 2) goto badarg;
+    //[> decode type <]
+    //ei_decode_ei_term(buf, &index, &type);
+    //if (type.ei_type != ERL_BINARY_EXT) goto badarg;
+    //index += 5; // skip tag + 4 byte size
+    //index += type.size;
+    //[> decode domain <]
+    //ei_decode_ei_term(buf, &index, &domain);
+    //if (domain.ei_type != ERL_BINARY_EXT) {
+    //  driver_free(type_tmp);
+    //  goto badarg;
+    //}
+    //index += 5; // skip tag + 4 byte size
+    //err = DNSServiceBrowse(&dd->sd_ref,
+    //                       0, // Flags
+    //                       kDNSServiceInterfaceIndexAny,
+    //                       type_tmp,
+    //                       domain_tmp,
+    //                       (DNSServiceBrowseReply) BrowseReply,
+    //                       dd);
+
+    err = DNSServiceQueryRecord(&dd->sd_ref,
+				0, // Flags
+				kDNSServiceInterfaceIndexAny,
+				// TODO: tmp
+                                kDNSServiceType_TXT,
+                                kDNSServiceClass_IN,
+                                (DNSServiceQueryRecordReply) QueryRecordReply,
+                                dd);
   } else {
     goto badarg;
   }
