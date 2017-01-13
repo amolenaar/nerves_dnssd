@@ -42,6 +42,7 @@
 -export([browse/1, browse/2]).
 -export([resolve/3, resolve_sync/3, resolve_sync/4]).
 -export([register/2, register/3, register/4, register/6]).
+-export([query_record/2]).
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
@@ -64,8 +65,13 @@
 -type resolve_result() :: {resolve, {hostname(), ip_port(), txt_strings()}}.
 -type resolve_sync_result() :: {hostname(), ip_port(), txt_strings()}.
 -type register_result() :: {register, add | remove, {name(), type(), domain()}}.
+-type rtype() :: binary() | iolist().
+-type rclass() :: binary() | iolist().
+-type rdata() :: binary() | iolist().
+%% TODO: is name() the right type in query_result()?
+-type query_record_result() :: {query_record, add | remove, {domain(), rtype(), rclass(), rdata()}}.
 -type result() :: enumerate_result() | browse_result() | resolve_result() |
-		  register_result().
+		  register_result() | query_record_result().
 -type result_message() :: {dnssd, op_ref(), result()}.
 
 -export_type([domain_type/0, domain/0, name/0, type/0, hostname/0, ip_port/0,
@@ -240,6 +246,18 @@ register(Name, Type, Port, Txt, Host, Domain)
 	    end
     end.
 
+-spec query_record(domain(), rtype()) -> {ok, op_ref()} | {error, _}.
+query_record(Domain, RType)
+  when is_binary(Domain), is_binary(RType) ->
+    case ensure_safe_rtype(RType) of
+	{error, _} = Err -> Err;
+	_ -> dnssd_server:query_record(Domain, RType)
+    end;
+query_record(Domain, RType)
+  when ?IS_LIST_OR_BIN(Domain),
+       ?IS_LIST_OR_BIN(RType) ->
+    query_record(iolist_to_binary(Domain), iolist_to_binary(Domain)).
+
 -ifdef(AVAHI).
 ensure_safe_name(<<>>) ->
     {ok, Hostname} = inet:gethostname(),
@@ -269,6 +287,10 @@ ensure_safe_type(<<$_, S, _/binary>> = RegType)
     end;
 ensure_safe_type(_) ->
     {error, bad_type}.
+
+ensure_safe_rtype(<<"TXT">>) -> ok;
+ensure_safe_rtype(RType) ->
+    {error, {bad_rtype, RType}}.
 
 parse_type_t(<<$_, Protocol/binary>>) ->
     parse_type_t(<<>>, Protocol).
