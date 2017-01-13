@@ -25,7 +25,7 @@
 %% API
 -export([start_link/0]).
 
--export([stop/1, enumerate/1, browse/2, resolve/3, register/6, results/1]).
+-export([stop/1, enumerate/1, browse/2, resolve/3, register/6, query_record/2, results/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
