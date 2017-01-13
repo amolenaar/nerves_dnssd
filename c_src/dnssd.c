@@ -27,10 +27,11 @@
 #include <string.h>
 #include <dns_sd.h>
 
-#define DNSSD_CMD_ENUM     0
-#define DNSSD_CMD_BROWSE   1
-#define DNSSD_CMD_RESOLVE  2
-#define DNSSD_CMD_REGISTER 3
+#define DNSSD_CMD_ENUM		0
+#define DNSSD_CMD_BROWSE	1
+#define DNSSD_CMD_RESOLVE	2
+#define DNSSD_CMD_REGISTER	3
+#define DNSSD_CMD_QUERY_RECORD	4
 
 typedef struct _dnssd_drv_t {
   DNSServiceRef sd_ref;

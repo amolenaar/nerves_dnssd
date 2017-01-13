@@ -92,6 +92,15 @@ when is_binary(Name), is_binary(Type), is_binary(Domain), is_binary(Host),
     Req = {start, {register, Name, Type, Domain, Host, Port, Txt}},
     gen_server:call(?SERVER, Req).
 
+%%--------------------------------------------------------------------
+%% @private
+%% @doc Query for a specific DNS record type
+%% @end
+%%--------------------------------------------------------------------
+query_record(Domain, RType) ->
+    Req = {start, {query_record, Domain, RType}},
+    gen_server:call(?SERVER, Req).
+
 results(Ref) when is_reference(Ref) ->
     Req = {results, Ref},
     gen_server:call(?SERVER, Req).

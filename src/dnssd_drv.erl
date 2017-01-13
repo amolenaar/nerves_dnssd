@@ -49,10 +49,11 @@
 
 -define(DRIVER_NAME, ?MODULE_STRING).
 
--define(DRV_CMD_ENUM    , 0).
--define(DRV_CMD_BROWSE  , 1).
--define(DRV_CMD_RESOLVE , 2).
--define(DRV_CMD_REGISTER, 3).
+-define(DRV_CMD_ENUM        , 0).
+-define(DRV_CMD_BROWSE      , 1).
+-define(DRV_CMD_RESOLVE     , 2).
+-define(DRV_CMD_REGISTER    , 3).
+-define(DRV_CMD_QUERY_RECORD, 4).
 
 -define(ERR_NOERROR                   , 0).
 -define(ERR_UNKNOWN                   , -65537).
@@ -184,6 +185,8 @@ init({Pid, Arg}) when is_pid(Pid) andalso is_tuple(Arg) ->
 		   drv_resolve(DrvPort, Name, Type, Domain);
 	       {register, Name, Type, Domain, Host, Port, Txt} ->
 		   drv_register(DrvPort, Name, Type, Domain, Host, Port, Txt);
+	       {query_record, Domain, RType} ->
+		   drv_query_record(DrvPort, Domain, RType);
 	       _ ->
 		   {error, bad_op}
 	   end,
@@ -414,6 +417,11 @@ drv_register(ErlPort, Name, Type, Domain, Host, Port, Txt)
        is_binary(Host), is_integer(Port), is_binary(Txt) ->
     Data = {Name, Type, Domain, Host, Port, Txt},
     erlang:port_call(ErlPort, ?DRV_CMD_REGISTER, Data).
+
+drv_query_record(ErlPort, Domain, RType)
+  when is_port(ErlPort), is_binary(Domain), is_binary(RType) ->
+    Data = {Domain, RType},
+    erlang:port_call(ErlPort, ?DRV_CMD_QUERY_RECORD, Data).
 
 %% Misc
 
