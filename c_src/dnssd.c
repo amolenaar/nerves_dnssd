@@ -378,38 +378,31 @@ static ErlDrvSSizeT call(ErlDrvData edd, unsigned int cmd, char *buf,
     driver_free(host_tmp);
     driver_free(txt_tmp);
   } else if (cmd == DNSSD_CMD_QUERY_RECORD) {
-
-    //if (!((int)arg.ei_type == ERL_TUPLE) || arg.arity != 2) goto badarg;
-    //[> decode type <]
-    //ei_decode_ei_term(buf, &index, &type);
-    //if (type.ei_type != ERL_BINARY_EXT) goto badarg;
-    //index += 5; // skip tag + 4 byte size
-    //index += type.size;
-    //[> decode domain <]
-    //ei_decode_ei_term(buf, &index, &domain);
-    //if (domain.ei_type != ERL_BINARY_EXT) {
-    //  driver_free(type_tmp);
-    //  goto badarg;
-    //}
-    //index += 5; // skip tag + 4 byte size
-    //err = DNSServiceBrowse(&dd->sd_ref,
-    //                       0, // Flags
-    //                       kDNSServiceInterfaceIndexAny,
-    //                       type_tmp,
-    //                       domain_tmp,
-    //                       (DNSServiceBrowseReply) BrowseReply,
-    //                       dd);
-
+    if (!arg.ei_type == ERL_TUPLE || arg.arity != 2) goto badarg;
+    /* decode domain */
+    ei_decode_ei_term(buf, &index, &domain);
+    if (domain.ei_type != ERL_BINARY_EXT) goto badarg;
+    index += 5; // skip tag + 4 byte size
+    domain_tmp = (char *) driver_alloc(domain.size + 1);
+    memset(domain_tmp, 0, domain.size + 1);
+    memcpy(domain_tmp, buf + index, domain.size);
+    index += domain.size;
+    /* decode rtype */
+    ei_decode_ei_term(buf, &index, &type);
+    if (type.ei_type != ERL_INTEGER_EXT &&
+	type.ei_type != ERL_SMALL_INTEGER_EXT) {
+      driver_free(domain_tmp);
+      goto badarg;
+    }
     err = DNSServiceQueryRecord(&dd->sd_ref,
 				0, // Flags
 				kDNSServiceInterfaceIndexAny,
-				// TODO: tmp
-                                "x4._http._tcp.local",
-                                kDNSServiceType_TXT,
+                                domain_tmp,
+                                (uint16_t) type.value.i_val,
                                 kDNSServiceClass_IN,
                                 (DNSServiceQueryRecordReply) QueryRecordReply,
                                 dd);
-
+    driver_free(domain_tmp);
   } else {
     goto badarg;
   }
