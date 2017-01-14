@@ -389,8 +389,7 @@ static ErlDrvSSizeT call(ErlDrvData edd, unsigned int cmd, char *buf,
     index += domain.size;
     /* decode rtype */
     ei_decode_ei_term(buf, &index, &type);
-    if (type.ei_type != ERL_INTEGER_EXT &&
-	type.ei_type != ERL_SMALL_INTEGER_EXT) {
+    if (type.ei_type != ERL_SMALL_INTEGER_EXT) {
       driver_free(domain_tmp);
       goto badarg;
     }
