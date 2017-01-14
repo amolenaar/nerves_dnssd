@@ -394,13 +394,13 @@ static ErlDrvSSizeT call(ErlDrvData edd, unsigned int cmd, char *buf,
       goto badarg;
     }
     err = DNSServiceQueryRecord(&dd->sd_ref,
-				0, // Flags
-				kDNSServiceInterfaceIndexAny,
-                                domain_tmp,
-                                (uint16_t) type.value.i_val,
-                                kDNSServiceClass_IN,
-                                (DNSServiceQueryRecordReply) QueryRecordReply,
-                                dd);
+			        0, // Flags
+			        kDNSServiceInterfaceIndexAny,
+			        domain_tmp,
+			        (uint16_t) type.value.i_val,
+			        kDNSServiceClass_IN,
+			        (DNSServiceQueryRecordReply) QueryRecordReply,
+			        dd);
     driver_free(domain_tmp);
   } else {
     goto badarg;
