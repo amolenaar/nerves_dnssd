@@ -289,7 +289,6 @@ ensure_safe_type(_) ->
     {error, bad_type}.
 
 ensure_safe_rtype(RType) when is_binary(RType) ->
-    UpperRType = list_to_binary(string:to_upper(binary_to_list(RType))),
     dnssd_definition:name_to_integer(service_type, RType).
 
 parse_type_t(<<$_, Protocol/binary>>) ->

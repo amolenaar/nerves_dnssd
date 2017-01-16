@@ -89,7 +89,8 @@ integer_to_name(Kind, I) when is_integer(I),
 name_to_integer(Kind, Name) when (service_class =:= Kind orelse
                                   service_type =:= Kind),
                                  is_binary(Name) ->
-    case lists:keyfind(Name, 2, ?MODULE:Kind()) of
+    UpperName = list_to_binary(string:to_upper(binary_to_list(Name))),
+    case lists:keyfind(UpperName, 2, ?MODULE:Kind()) of
         false -> {error, {unknown, Kind, Name}};
-        {I, Name} -> I
+        {I, UpperName} -> I
     end.
