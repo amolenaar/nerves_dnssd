@@ -21,10 +21,10 @@ TARGET_OS ?= linux
 all: daemon lib
 
 daemon: priv/sbin/mdnsd
-	echo $^ installed
+	@echo $^ installed
 
 lib: priv/lib/libdns_sd.so.1
-	echo $^ installed
+	@echo $^ installed
 
 deps/mDNSResponder-$(VERSION).tar.gz:
 	curl https://opensource.apple.com/tarballs/mDNSResponder/mDNSResponder-$(VERSION).tar.gz -o deps/mDNSResponder-$(VERSION).tar.gz --create-dirs
@@ -33,7 +33,7 @@ deps/mDNSResponder-$(VERSION): deps/mDNSResponder-$(VERSION).tar.gz
 	tar xzf deps/mDNSResponder-$(VERSION).tar.gz -C deps
 
 deps/mDNSResponder-$(VERSION)/mDNSPosix/build/prod/mdnsd: deps/mDNSResponder-$(VERSION)
-	make -C deps/mDNSResponder-$(VERSION)/mDNSPosix Daemon os=$(TARGET_OS)
+	make -C deps/mDNSResponder-$(VERSION)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) HAVE_IPV6=0
 
 priv/sbin/mdnsd: deps/mDNSResponder-$(VERSION)/mDNSPosix/build/prod/mdnsd
 	mkdir -p priv/sbin
@@ -41,7 +41,7 @@ priv/sbin/mdnsd: deps/mDNSResponder-$(VERSION)/mDNSPosix/build/prod/mdnsd
 	cp $^ $@
 
 deps/mDNSResponder-$(VERSION)/mDNSPosix/build/prod/libdns_sd.so.1: deps/mDNSResponder-$(VERSION)
-	make -C deps/mDNSResponder-$(VERSION)/mDNSPosix libdns_sd os=$(TARGET_OS)
+	make -C deps/mDNSResponder-$(VERSION)/mDNSPosix libdns_sd os=$(TARGET_OS) CC=$(CC) HAVE_IPV6=0
 
 priv/lib/libdns_sd.so.1: deps/mDNSResponder-$(VERSION)/mDNSPosix/build/prod/libdns_sd.so.1
 	mkdir -p priv/lib
