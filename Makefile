@@ -8,45 +8,84 @@
 # LDFLAGS	linker flags for linking all binaries
 # ERL_LDFLAGS	additional linker flags for projects referencing Erlang libraries
 
-LDFLAGS +=
-CFLAGS += 
-CC ?= $(CROSSCOMPILER)gcc
-
 # mDNSResponder version
 VERSION = 765.50.9
-TARGET_OS ?= linux
+
+ifneq ($(NERVES_SYSTEM),)
+TARGET_OS = linux
+else
+TARGET_OS ?= x
+endif
+
+CC ?= $(CROSSCOMPILER)gcc
+
+ifeq ($(TARGET_OS),x)
+LD = $(CC) -bundle -flat_namespace -undefined suppress
+else
+# Assume Linux/Nerves
+LD = $(CC) -shared
+endif
+
+CFLAGS += -fPIC
+LDFLAGS += 
+BUILD_DIR ?= _build/make
+BUILD_DRV_DIR = $(BUILD_DIR)/dnssd_drv
+
+# Set Erlang-specific compile and linker flags
+ERL_EI_INCLUDE_DIR ?= $(ROOTDIR)/usr/include
+ERL_EI_LIBDIR ?= $(ROOTDIR)/usr/lib
+ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
+ERL_LDFLAGS ?= -L$(ERL_EI_LIBDIR) -lei
+
+###
+# from  mDNSResponder-$(VERSION)/mDNSPosix/Makefile:
+CLIENTLIBOBJS = $(BUILD_DRV_DIR)/dnssd_clientlib.c.so.o $(BUILD_DRV_DIR)/dnssd_clientstub.c.so.o $(BUILD_DRV_DIR)/dnssd_ipc.c.so.o
 
 .PHONY: all clean daemon lib
 
-all: daemon lib
+all: daemon lib driver
 
 daemon: priv/sbin/mdnsd
 	@echo $^ installed
 
-lib: priv/lib/libdns_sd.so.1
+lib: $(BUILD_DRV_DIR)/libdns_sd.so.1
+	@echo $^ compiled
+
+driver: lib priv/dnssd_drv.so
 	@echo $^ installed
 
 deps/mDNSResponder-$(VERSION).tar.gz:
 	curl https://opensource.apple.com/tarballs/mDNSResponder/mDNSResponder-$(VERSION).tar.gz -o deps/mDNSResponder-$(VERSION).tar.gz --create-dirs
 
-deps/mDNSResponder-$(VERSION): deps/mDNSResponder-$(VERSION).tar.gz
-	tar xzf deps/mDNSResponder-$(VERSION).tar.gz -C deps
+$(BUILD_DIR)/mDNSResponder-$(VERSION): deps/mDNSResponder-$(VERSION).tar.gz
+	mkdir -p $(BUILD_DIR)
+	tar xzf deps/mDNSResponder-$(VERSION).tar.gz -C $(BUILD_DIR)
 
-deps/mDNSResponder-$(VERSION)/mDNSPosix/build/prod/mdnsd: deps/mDNSResponder-$(VERSION)
-	make -C deps/mDNSResponder-$(VERSION)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) HAVE_IPV6=0
+##
+# The daemon
+#
+# TODO: can be done in one shot
+$(BUILD_DIR)/mdnsd/mdnsd: $(BUILD_DIR)/mDNSResponder-$(VERSION)
+	make -C $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_DIR)/mdnsd
 
-priv/sbin/mdnsd: deps/mDNSResponder-$(VERSION)/mDNSPosix/build/prod/mdnsd
+priv/sbin/mdnsd: $(BUILD_DIR)/mdnsd/mdnsd
 	mkdir -p priv/sbin
 	# Do a simple copy, since we do not want the initd script copied as well
 	cp $^ $@
 
-deps/mDNSResponder-$(VERSION)/mDNSPosix/build/prod/libdns_sd.so.1: deps/mDNSResponder-$(VERSION)
-	make -C deps/mDNSResponder-$(VERSION)/mDNSPosix libdns_sd os=$(TARGET_OS) CC=$(CC) HAVE_IPV6=0
+##
+# The port driver
+#
 
-priv/lib/libdns_sd.so.1: deps/mDNSResponder-$(VERSION)/mDNSPosix/build/prod/libdns_sd.so.1
-	mkdir -p priv/lib
-	mkdir -p priv/include
-	make -C deps/mDNSResponder-$(VERSION)/mDNSPosix InstalledLib os=$(TARGET_OS) INSTBASE=$(abspath priv)
+$(BUILD_DRV_DIR)/libdns_sd.so.1: $(BUILD_DIR)/mDNSResponder-$(VERSION)
+	make -C $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSPosix libdns_sd os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_DRV_DIR) OBJDIR=$(BUILD_DRV_DIR)
+
+$(BUILD_DRV_DIR)/dnssd.o: c_src/dnssd.c
+	env
+	$(CC) -c $(ERL_CFLAGS) $(CFLAGS) -I $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSShared -o $@ $<
+
+priv/dnssd_drv.so: $(BUILD_DRV_DIR)/dnssd.o $(CLIENTLIBOBJS)
+	$(LD) $+ $(ERL_LDFLAGS) $(LDFLAGS) -o $@
 
 clean:
-	rm -rf deps/mDNSResponder-$(VERSION) priv
+	rm -rf $(BUILD_DIR)

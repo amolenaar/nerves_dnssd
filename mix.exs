@@ -9,7 +9,7 @@ defmodule NervesMdns.Mixfile do
      start_permanent: Mix.env == :prod,
      deps: deps(),
      compilers: [:elixir_make] ++ Mix.compilers,
-     make_clean: ["clean"]]
+     make_env: %{ "BUILD_DIR" => Mix.Project.build_path() }]
   end
 
   # Configuration for the OTP application
