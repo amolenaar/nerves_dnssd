@@ -13,8 +13,10 @@ VERSION = 765.50.9
 
 ifneq ($(NERVES_SYSTEM),)
 TARGET_OS = linux
+TARGET_OPTS = HAVE_IPV6=0
 else
 TARGET_OS ?= x
+TARGET_OPTS =
 endif
 
 CC ?= $(CROSSCOMPILER)gcc
@@ -66,7 +68,7 @@ $(BUILD_DIR)/mDNSResponder-$(VERSION): deps/mDNSResponder-$(VERSION).tar.gz
 #
 # TODO: can be done in one shot
 $(BUILD_DIR)/mdnsd/mdnsd: $(BUILD_DIR)/mDNSResponder-$(VERSION)
-	make -C $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_DIR)/mdnsd
+	make -C $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_DIR)/mdnsd $(TARGET_OPTS)
 
 priv/sbin/mdnsd: $(BUILD_DIR)/mdnsd/mdnsd
 	mkdir -p priv/sbin
