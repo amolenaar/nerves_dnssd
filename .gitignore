@@ -1,6 +1,6 @@
-/_build
+_build
 /cover
-/deps
+deps
 /doc
 /.fetch
 erl_crash.dump
@@ -17,3 +17,7 @@ priv
 *.bea#
 .DS_Store
 .eunit/
+
+_images
+.nerves
+rel

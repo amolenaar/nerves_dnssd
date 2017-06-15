@@ -1,4 +1,4 @@
-# Nerves.MDNS
+# Nerves.Dnssd
 
 A mDNS (Bonjour) service for the Nerves platform. The real Bonjour (mDNSReponder)
 binaries are used, to provide 100% compatibility.
@@ -38,13 +38,7 @@ compatibility layer along with the appropriate development files:
 * BSD/Linux - search for Avahi in your operating systems software manager
 * Ubuntu - apt-get install avahi-daemon libavahi-compat-libdnssd-dev
 
-### Build Process
-
-Build with [rebar](https://github.com/basho/rebar):
-
-* compile: `rebar compile`
-* test: `rebar eunit`
-* edoc: `rebar doc`
+### Avahi on Linux
 
 If you are running Linux with Avahi you will need Avahi's Bonjour compatibility
 layer installed. If `{error,-65537}` is returned when starting an operation

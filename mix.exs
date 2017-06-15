@@ -1,4 +1,4 @@
-defmodule NervesMdns.Mixfile do
+defmodule Nerves.Dnssd.Mixfile do
   use Mix.Project
 
   def project do
@@ -17,7 +17,7 @@ defmodule NervesMdns.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [mod: {:dnssd_app, []},
+    [ # mod: {:dnssd_app, []},
      extra_applications: [:logger]]
   end
 
