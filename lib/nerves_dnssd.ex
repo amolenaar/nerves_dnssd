@@ -31,11 +31,6 @@ defmodule Nerves.Dnssd do
       IO.inspect info, label: "mdnsd unknown"
     end
 
-    def terminate(_reason, port) do
-      Port.close(port)
-      :ok
-    end
-
   end
 
 end
