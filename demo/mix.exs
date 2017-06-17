@@ -58,7 +58,7 @@ defmodule NervesDnssdDemo.Mixfile do
   # Specify target specific dependencies
   def deps("host"), do: []
   def deps(target) do
-    [{:nerves_runtime, "~> 0.1.0"},
+    [{:nerves_runtime, "~> 0.2.0"},
      {:"nerves_system_#{target}", "~> 0.10", runtime: false},
      {:nerves_networking, "~> 0.6.0"}]
   end
