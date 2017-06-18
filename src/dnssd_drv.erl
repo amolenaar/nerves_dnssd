@@ -605,7 +605,6 @@ register_test_() ->
 	    Txt <- Txts ].
 
 parallel_test_() ->
-    ok = application:start(dnssd),
     Name = fun(N) -> list_to_binary(integer_to_list(N)) end,
     Type = fun(N) -> iolist_to_binary(["_test-", Name(N), "._udp"]) end,
     Dom = <<"local">>,

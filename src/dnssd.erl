@@ -36,7 +36,7 @@
 %%
 %% @end
 -module(dnssd).
--export([start/0, stop/0, stop/1]).
+-export([stop/1]).
 -export([results/1]).
 -export([enumerate/1]).
 -export([browse/1, browse/2]).
@@ -48,7 +48,6 @@
 -include_lib("eunit/include/eunit.hrl").
 -endif.
 
--define(APP_NAME, ?MODULE).
 -define(IS_LIST_OR_BIN(Term), (is_list(Term) orelse is_binary(Term))).
 
 -type domain_type() :: 'reg' | 'browse'.
@@ -78,14 +77,6 @@
 	      txt_strings/0, txt_string/0, op_ref/0, result/0, result_message/0,
 	      enumerate_result/0, browse_result/0, resolve_result/0,
 	      register_result/0]).
-
-%% @doc Start the DNSSD application
--spec start() -> 'ok' | {'error',_}.
-start() -> application:start(?APP_NAME).
-
-%% @doc Stop the DNSSD application
--spec stop() -> 'ok' | {'error',_}.
-stop() -> application:stop(?APP_NAME).
 
 %% @doc Stop a DNSSD operation
 -spec stop(op_ref()) -> ok | {error, _}.

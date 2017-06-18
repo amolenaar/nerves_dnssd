@@ -5,32 +5,22 @@ defmodule Nerves.Dnssd do
 
   @doc """
   """
-  def start do
-    # Start mdnsd supervisor
-    {:ok, self()}
+  def start(_type, _args) do
+    import Supervisor.Spec, warn: false
+
+    :ok = :dnssd_drv.load()
+
+    children = [
+      #worker(Nerves.Dnssd.Daemon, []), # make :transient/:permanent dependent on platform
+      supervisor(:dnssd_sup, [])
+    ]
+
+    opts = [strategy: :one_for_one, name: Nerves.Dnssd.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 
-  defmodule Daemon do
-
-    def start_link do
-      GenServer.start_link(__MODULE__, [])
-    end
-
-    ## Server callbacks
-
-    def init([]) do
-      port = Port.open({:spawn_executable, :code.priv_dir(:nerves_dnssd) ++ '/sbin/mdnsd'}, [:exit_status, args: ['-debug'], line: 256])
-      {:ok, port}
-    end
-
-    def handle_info({_, {:data, {:eol, message}}}, _port) do
-      IO.inspect message, label: "mdnsd"
-    end
-
-    def handle_info(info, _port) do
-      IO.inspect info, label: "mdnsd unknown"
-    end
-
+  def stop(_state) do
+    :ok = :dnssd_drv.unload()
   end
 
 end
