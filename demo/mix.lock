@@ -1,4 +1,5 @@
-%{"distillery": {:hex, :distillery, "1.4.0", "d633cd322c8efa0428082b00b7f902daf8caa166d45f9022bbc19a896d2e1e56", [:mix], []},
+%{"bootloader": {:git, "https://github.com/nerves-project/bootloader.git", "ccf0b0083f6f73a532756a0ca3f965cfa917ce96", []},
+  "distillery": {:hex, :distillery, "1.4.0", "d633cd322c8efa0428082b00b7f902daf8caa166d45f9022bbc19a896d2e1e56", [:mix], []},
   "dnssd": {:git, "https://github.com/erszcz/dnssd_erlang.git", "5d2c373d765266de122c6f6553c5ec2a907d7e99", [ref: "5d2c373d"]},
   "elixir_make": {:hex, :elixir_make, "0.4.0", "992f38fabe705bb45821a728f20914c554b276838433349d4f2341f7a687cddf", [:mix], []},
   "gen_stage": {:hex, :gen_stage, "0.12.0", "74ec6f84ea0e0e81aa26b745870495094de1c59bfdbd012ae3103208ea124623", [:mix], []},

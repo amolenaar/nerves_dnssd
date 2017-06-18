@@ -10,7 +10,7 @@ defmodule NervesDnssdDemo.Mixfile do
   """, :reset])
 
   def project do
-    [app: :nerves_mdns_demo,
+    [app: :nerves_dnssd_demo,
      version: "0.1.0",
      elixir: "~> 1.4.0",
      target: @target,
@@ -31,12 +31,12 @@ defmodule NervesDnssdDemo.Mixfile do
   # Specify target specific application configurations
   # It is common that the application start function will start and supervise
   # applications which could cause the host to fail. Because of this, we only
-  # invoke NervesMdnsDemo.start/2 when running on a target.
+  # invoke NervesDnssdDemo.start/2 when running on a target.
   def application("host") do
     [extra_applications: [:logger]]
   end
   def application(_target) do
-    [mod: {NervesMdnsDemo.Application, []},
+    [mod: {NervesDnssdDemo.Application, []},
      extra_applications: [:logger]]
   end
 
@@ -51,6 +51,7 @@ defmodule NervesDnssdDemo.Mixfile do
   # Type "mix help deps" for more examples and options
   def deps do
     [{:nerves, "~> 0.5.0", runtime: false},
+     {:bootloader, github: "nerves-project/bootloader"},
      {:nerves_dnssd, path: ".."}] ++
     deps(@target)
   end
