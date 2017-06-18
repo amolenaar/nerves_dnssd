@@ -9,9 +9,10 @@ defmodule Nerves.Dnssd do
     import Supervisor.Spec, warn: false
 
     :ok = :dnssd_drv.load()
+    daemon_restart = Application.get_env(:nerves_dnssd, :daemon_restart, :transient)
 
     children = [
-      #worker(Nerves.Dnssd.Daemon, []), # make :transient/:permanent dependent on platform
+      worker(Nerves.Dnssd.Daemon, [], restart: daemon_restart),
       supervisor(:dnssd_sup, [])
     ]
 
