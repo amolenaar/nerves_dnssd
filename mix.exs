@@ -4,6 +4,7 @@ defmodule Nerves.Dnssd.Mixfile do
   def project do
     [app: :nerves_dnssd,
      version: "0.1.0",
+     desciption: "Apple Bonjour DNS Service Discovery for the Nerves platform",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -31,6 +32,7 @@ defmodule Nerves.Dnssd.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:elixir_make, "~> 0.4", runtime: false}]
+    [{:elixir_make, "~> 0.4", runtime: false},
+     {:mix_eunit, "~> 0.3.0", runtime: false}]
   end
 end
