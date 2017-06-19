@@ -1,6 +1,11 @@
 defmodule Nerves.Dnssd.Mixfile do
   use Mix.Project
 
+  Mix.shell.info([:green, """
+  Mix environment
+    MIX_ENV:      #{Mix.env}
+  """, :reset])
+
   def project do
     [app: :nerves_dnssd,
      version: "0.1.0",
@@ -11,8 +16,10 @@ defmodule Nerves.Dnssd.Mixfile do
      aliases: aliases(),
      deps: deps(),
      compilers: [:elixir_make] ++ Mix.compilers,
-     make_env: %{ "BUILD_DIR" => Mix.Project.build_path(),
-                  "INSTALL_DIR" => Mix.Project.build_path() <> "/lib/nerves_dnssd"}]
+     make_env: %{
+       "BUILD_DIR"   => Mix.Project.build_path(),
+       "INSTALL_DIR" => Mix.Project.build_path() <> "/lib/nerves_dnssd"
+     }]
   end
 
   # Configuration for the OTP application
