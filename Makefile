@@ -47,13 +47,13 @@ CLIENTLIBOBJS = $(BUILD_DRV_DIR)/dnssd_clientlib.c.so.o $(BUILD_DRV_DIR)/dnssd_c
 
 all: daemon lib driver
 
-daemon: priv/sbin/mdnsd
+daemon: $(INSTALL_DIR)/priv/sbin/mdnsd
 	@echo $^ installed
 
 lib: $(BUILD_DRV_DIR)/libdns_sd.so.1
 	@echo $^ compiled
 
-driver: lib priv/dnssd_drv.so
+driver: lib $(INSTALL_DIR)/priv/dnssd_drv.so
 	@echo $^ installed
 
 deps/mDNSResponder-$(VERSION).tar.gz:
@@ -70,8 +70,8 @@ $(BUILD_DIR)/mDNSResponder-$(VERSION): deps/mDNSResponder-$(VERSION).tar.gz
 $(BUILD_DIR)/mdnsd/mdnsd: $(BUILD_DIR)/mDNSResponder-$(VERSION)
 	make -C $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_DIR)/mdnsd $(TARGET_OPTS)
 
-priv/sbin/mdnsd: $(BUILD_DIR)/mdnsd/mdnsd
-	mkdir -p priv/sbin
+$(INSTALL_DIR)/priv/sbin/mdnsd: $(BUILD_DIR)/mdnsd/mdnsd
+	mkdir -p $(INSTALL_DIR)/priv/sbin
 	# Do a simple copy, since we do not want the initd script copied as well
 	cp $^ $@
 
@@ -86,7 +86,8 @@ $(BUILD_DRV_DIR)/dnssd.o: c_src/dnssd.c
 	env
 	$(CC) -c $(ERL_CFLAGS) $(CFLAGS) -I $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSShared -o $@ $<
 
-priv/dnssd_drv.so: $(BUILD_DRV_DIR)/dnssd.o $(CLIENTLIBOBJS)
+$(INSTALL_DIR)/priv/dnssd_drv.so: $(BUILD_DRV_DIR)/dnssd.o $(CLIENTLIBOBJS)
+	mkdir -p $(INSTALL_DIR)/priv
 	$(LD) $+ $(ERL_LDFLAGS) $(LDFLAGS) -o $@
 
 clean:
