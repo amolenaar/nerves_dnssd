@@ -11,12 +11,19 @@
 # mDNSResponder version
 VERSION = 765.50.9
 
+UNAME = $(shell uname -s)
+
 ifneq ($(NERVES_SYSTEM),)
 TARGET_OS = linux
 TARGET_OPTS = HAVE_IPV6=0
-else
+else ifeq ($(UNAME),Linux)
+TARGET_OS ?= linux
+TARGET_OPTS =
+else ifeq ($(UNAME),Darwin)
 TARGET_OS ?= x
 TARGET_OPTS =
+else
+$(error No configuration for system $(UNAME))
 endif
 
 CC ?= $(CROSSCOMPILER)gcc
@@ -32,6 +39,7 @@ CFLAGS += -fPIC
 LDFLAGS += 
 BUILD_DIR ?= _build/make
 BUILD_DRV_DIR = $(BUILD_DIR)/dnssd_drv
+INSTALL_DIR ?= .
 
 # Set Erlang-specific compile and linker flags
 ERL_EI_INCLUDE_DIR ?= $(ROOTDIR)/usr/include
@@ -83,7 +91,6 @@ $(BUILD_DRV_DIR)/libdns_sd.so.1: $(BUILD_DIR)/mDNSResponder-$(VERSION)
 	make -C $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSPosix libdns_sd os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_DRV_DIR) OBJDIR=$(BUILD_DRV_DIR)
 
 $(BUILD_DRV_DIR)/dnssd.o: c_src/dnssd.c
-	env
 	$(CC) -c $(ERL_CFLAGS) $(CFLAGS) -I $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSShared -o $@ $<
 
 $(INSTALL_DIR)/priv/dnssd_drv.so: $(BUILD_DRV_DIR)/dnssd.o $(CLIENTLIBOBJS)
