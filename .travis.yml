@@ -6,4 +6,4 @@ elixir:
 otp_release:
   - 19.2
 
-sudo: false
+sudo: true
