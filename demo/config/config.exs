@@ -19,6 +19,12 @@ use Mix.Config
 
 # import_config "#{Mix.Project.config[:target]}.exs"
 
+config :nerves_dnssd_demo,
+  networking: false #Keyword.get(Mix.Project.config, :target) != "host"
+
+config :nerves_dnssd,
+  daemon_restart: :transient
+
 config :bootloader,
   overlay_path: "/tmp/erl_bootloader",
   init: [:nerves_runtime],

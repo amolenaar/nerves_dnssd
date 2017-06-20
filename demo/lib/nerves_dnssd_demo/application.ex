@@ -8,7 +8,8 @@ defmodule NervesDnssdDemo.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    Nerves.Networking.setup @interface
+    if Application.get_env(:nerves_dnssd_demo, :networking, true),
+      do: Nerves.Networking.setup @interface
 
     # Define workers and child supervisors to be supervised
     children = [
