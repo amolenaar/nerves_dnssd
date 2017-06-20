@@ -12,8 +12,7 @@ defmodule Nerves.Dnssd.Mixfile do
      deps: deps(),
      compilers: [:elixir_make] ++ Mix.compilers,
      make_env: %{
-       "BUILD_DIR"   => Mix.Project.build_path(),
-       "INSTALL_DIR" => Mix.Project.build_path() <> "/lib/nerves_dnssd"
+       "BUILD_DIR"   => Mix.Project.build_path()
      }]
   end
 

@@ -6,4 +6,10 @@ elixir:
 otp_release:
   - 19.2
 
-sudo: true
+sudo: required
+
+script:
+- MIX_ENV=test mix compile
+- sudo chown root priv/sbin/mdnsd
+- sudo chmod 4777 priv/sbin/mdnsd
+- mix test
