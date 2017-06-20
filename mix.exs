@@ -1,11 +1,6 @@
 defmodule Nerves.Dnssd.Mixfile do
   use Mix.Project
 
-  Mix.shell.info([:green, """
-  Mix environment
-    MIX_ENV:      #{Mix.env}
-  """, :reset])
-
   def project do
     [app: :nerves_dnssd,
      version: "0.1.0",
