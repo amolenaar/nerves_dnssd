@@ -5,6 +5,8 @@ defmodule Nerves.Dnssd.Daemon do
   It should just keep running.
   """
 
+  require Logger
+
   def start do
     GenServer.start(__MODULE__, [])
   end
@@ -16,12 +18,22 @@ defmodule Nerves.Dnssd.Daemon do
   ## Server callbacks
 
   def init([]) do
-    port = Port.open({:spawn_executable, :code.priv_dir(:nerves_dnssd) ++ '/sbin/mdnsd'}, [:exit_status, args: ['-debug']])
+    port = Port.open({:spawn_executable, :code.priv_dir(:nerves_dnssd) ++ '/sbin/mdnsd'}, [:exit_status, :stderr_to_stdout, args: ['-debug'], line: 256])
     {:ok, port}
   end
 
-  def handle_info({_, {:data, {:eol, message}}}, port) do
-    IO.inspect message, label: "mdnsd"
+  def handle_info({_port, {:data, {:eol, 'ERROR: ' ++ message}}}, port) do
+    Logger.error message
+    {:noreply, port}
+  end
+
+  def handle_info({_port, {:data, {:eol, 'WARNING: ' ++ message}}}, port) do
+    Logger.warn message
+    {:noreply, port}
+  end
+
+  def handle_info({_port, {:data, {:eol, message}}}, port) do
+    Logger.info message
     {:noreply, port}
   end
 
@@ -39,8 +51,7 @@ defmodule Nerves.Dnssd.Daemon do
     {:noreply, port}
   end
 
-  def terminate(thing, state) do
-    IO.inspect thing, label: "first arg"
-    IO.inspect state, label: "state"
+  def terminate(_error, port) do
+    Port.close(port)
   end
 end
