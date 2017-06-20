@@ -18,7 +18,7 @@ defmodule Nerves.Dnssd.Daemon do
   ## Server callbacks
 
   def init([]) do
-    port = Port.open({:spawn_executable, :code.priv_dir(:nerves_dnssd) ++ '/sbin/mdnsd'}, [:exit_status, :stderr_to_stdout, args: ['-debug'], line: 256])
+    port = Port.open({:spawn_executable, :code.priv_dir(:nerves_dnssd) ++ '/sbin/mdnsd'}, [:exit_status, :stderr_to_stdout, args: ["-debug"], line: 256])
     {:ok, port}
   end
 
@@ -41,17 +41,26 @@ defmodule Nerves.Dnssd.Daemon do
     {:stop, :normal, port}
   end
 
-  def handle_info({port, {:exit_status, status}}=info, port) do
-    IO.inspect info, label: "mdnsd info"
+  def handle_info({port, {:exit_status, status}}, port) do
+    Logger.warn "mdns daemon stopped with exit code #{status}, #{Port.info(port)}"
     {:stop, {:mdnsd_exited, status}, port}
   end
 
   def handle_info(info, port) do
-    IO.inspect info, label: "mdnsd info"
+    Logger.warn "Unexpected message: #{inspect info}"
     {:noreply, port}
   end
 
-  def terminate(_error, port) do
-    Port.close(port)
+  def terminate(_reason, nil) do
+    :ok
+  end
+
+  def terminate(_reason, port) do
+    case Port.info(port, :os_pid) do
+      {:os_pid, os_pid} ->
+        System.cmd("kill", ["#{os_pid}"])
+      _ -> :ok
+    end
+
   end
 end
