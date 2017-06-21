@@ -76,6 +76,7 @@ $(BUILD_DIR)/mDNSResponder-$(VERSION): deps/mDNSResponder-$(VERSION).tar.gz
 #
 # TODO: can be done in one shot
 $(BUILD_DIR)/mdnsd/mdnsd: $(BUILD_DIR)/mDNSResponder-$(VERSION)
+	patch -p 0 -d $(BUILD_DIR)/mDNSResponder-$(VERSION) < c_src/linux-prctl.patch
 	make -C $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_DIR)/mdnsd $(TARGET_OPTS)
 
 $(INSTALL_DIR)/priv/sbin/mdnsd: $(BUILD_DIR)/mdnsd/mdnsd
