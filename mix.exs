@@ -13,7 +13,8 @@ defmodule Nerves.Dnssd.Mixfile do
      compilers: [:elixir_make] ++ Mix.compilers,
      make_env: %{
        "BUILD_DIR"   => Mix.Project.build_path()
-     }]
+     },
+     make_clean: ["clean"]]
   end
 
   # Configuration for the OTP application

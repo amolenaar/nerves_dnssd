@@ -99,4 +99,4 @@ $(INSTALL_DIR)/priv/dnssd_drv.so: $(BUILD_DRV_DIR)/dnssd.o $(CLIENTLIBOBJS)
 	$(LD) $+ $(ERL_LDFLAGS) $(LDFLAGS) -o $@
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)/mDNSResponder-$(VERSION) $(BUILD_DIR)/dnssd_drv $(BUILD_DIR)/mdnsd priv/dnssd_drv.so priv/sbin/mdnsd
