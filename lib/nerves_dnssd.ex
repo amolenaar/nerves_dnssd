@@ -13,7 +13,7 @@ defmodule Nerves.Dnssd do
 
     children = [
       worker(Nerves.Dnssd.Daemon, [], restart: daemon_restart),
-      supervisor(:dnssd_sup, [])
+      worker(:dnssd_server, [], restart: :permanent)
     ]
 
     opts = [strategy: :one_for_one, name: Nerves.Dnssd.Supervisor]

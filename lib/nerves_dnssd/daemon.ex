@@ -19,7 +19,7 @@ defmodule Nerves.Dnssd.Daemon do
 
   def init([]) do
     port = Port.open({:spawn_executable, :code.priv_dir(:nerves_dnssd) ++ '/mdns-wrapper'},
-                     [:exit_status, cd: :code.priv_dir(:nerves_dnssd), line: 256])
+                     [:exit_status, :stderr_to_stdout, cd: :code.priv_dir(:nerves_dnssd), line: 256])
     {:ok, port}
   end
 
