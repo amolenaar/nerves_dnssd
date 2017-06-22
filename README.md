@@ -1,4 +1,4 @@
-# Nerves.Dnssd
+# Nerves.Dnssd [![Build Status](https://travis-ci.org/amolenaar/nerves_dnssd.svg?branch=master)](https://travis-ci.org/amolenaar/nerves_dnssd)
 
 A mDNS (Bonjour) service for the Nerves platform. The real Bonjour (mDNSReponder)
 binaries are used, to provide 100% compatibility.
