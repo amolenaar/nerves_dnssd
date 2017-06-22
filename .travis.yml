@@ -8,8 +8,6 @@ otp_release:
 
 sudo: required
 
-script:
-- MIX_ENV=test mix compile
-- sudo chown root priv/sbin/mdnsd
-- sudo chmod 4777 priv/sbin/mdnsd
-- mix test
+# Ensure we can write our socket and pid files
+before_script:
+- sudo chmod 777 /run
