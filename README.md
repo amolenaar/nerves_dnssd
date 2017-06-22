@@ -20,7 +20,7 @@ by adding `nerves_mdns` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:nerves_mdnsd, "~> 0.1.0"}]
+  [{:nerves_dnssd, "~> 0.1.0"}]
 end
 ```
 
@@ -37,8 +37,10 @@ This will start the `nerves_dnssd` application and possibly an mDNS service.
 
 ### Browsing for Services
 
-    iex> :dnssd.browse("_http._tcp")
-    {:ok, #Reference<0.0.2.763>}
+```elixir
+iex> :dnssd.browse("_http._tcp")
+{:ok, #Reference<0.0.2.763>}
+```
 
 In the success case, all functions return a tuple of the form `{:ok, reference}`.
 Reference should be retained to pass to `:dnssd.stop/1` when no further results
