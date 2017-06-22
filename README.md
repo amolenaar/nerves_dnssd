@@ -35,21 +35,26 @@ The examples have been translated to Elixir from the original (erlang) examples.
 
 This will start the `nerves_dnssd` application and possibly an mDNS service.
 
+In the success case, all functions return a tuple of the form `{:ok, reference}`.
+Reference should be retained to pass to `:dnssd.stop/1` when no further results
+are required. Please note that proper handing of references is omitted in the
+examples below for simplicity and readability.
+
+It's important to stop operations when no more results are needed to avoid
+generating needless network traffic. To stop an operation pass the reference
+returned when you started the operation to `:dnssd.stop/1`. Operations will also
+be stopped if your process exits.
+
 ### Browsing for Services
 
 ```elixir
 iex> :dnssd.browse("_http._tcp")
 {:ok, #Reference<0.0.2.763>}
+iex> flush()
+{:dnssd, #Reference<0.0.2.763>,
+ {:browse, :add, {"Foo", "_http._tcp.", "local."}}}
+:ok
 ```
-
-In the success case, all functions return a tuple of the form `{:ok, reference}`.
-Reference should be retained to pass to `:dnssd.stop/1` when no further results
-are required.
-
-    iex> flush()
-    {:dnssd, #Reference<0.0.2.763>,
-     {:browse, :add, {"Foo", "_http._tcp.", "local."}}}
-    :ok
 
 Results will be sent in tuples of the form
 `{:dnssd, reference, {operation, change, result}}`. Reference will be the same
@@ -59,17 +64,19 @@ atoms `:browse`, `:resolve`, `:register` or `:enumerate`. Change will be the ato
 browse operation, it will be a tuple containing binaries of the form
 `{service_name, service_type, domain}`.
 
-    iex> :dnssd.browse("_http._tcp", "dns-sd.org")
-    {:ok, #Reference<0.0.4.1850>}
-    iex> flush()
-    {:dnssd, #Reference<0.0.4.1850>,
-     {:browse, :add,
-      {" * Apple, makers of the iPod", "_http._tcp.", "dns-sd.org."}}}
-    {:dnssd, #Reference<0.0.4.1850>,
-     {:browse, :add,
-      {" * Google, searching the Web", "_http._tcp.", "dns-sd.org."}}}
-    ...
-    :ok
+```elixir
+iex> :dnssd.browse("_http._tcp", "dns-sd.org")
+{:ok, #Reference<0.0.4.1850>}
+iex> flush()
+{:dnssd, #Reference<0.0.4.1850>,
+ {:browse, :add,
+  {" * Apple, makers of the iPod", "_http._tcp.", "dns-sd.org."}}}
+{:dnssd, #Reference<0.0.4.1850>,
+ {:browse, :add,
+  {" * Google, searching the Web", "_http._tcp.", "dns-sd.org."}}}
+# …
+:ok
+```
 
 Browsing can be limited to a specific domain by specifying the domain as
 argument two. Both domains and service types may be specified as lists or
@@ -77,16 +84,17 @@ binaries.
 
 ### Resolving a Service Instance
 
-    iex> :dnssd.resolve(" * DNS Service Discovery", "_http._tcp.", "dns-sd.org.")
-    {:ok, #Reference<0.0.4.1888>}
-
 To resolve a service, supply it's name, registration type and domain to the
 resolve function.
 
-    iex> flush()
-    {:dnssd, #Reference<0.0.4.1888>,
-     {:resolve, {"dns-sd.org.", 80, [{"txtvers", "1"}, {"path", "/"}]}}}
-    :ok
+```elixir
+iex> :dnssd.resolve(" * DNS Service Discovery", "_http._tcp.", "dns-sd.org.")
+{:ok, #Reference<0.0.4.1888>}
+iex> flush()
+{:dnssd, #Reference<0.0.4.1888>,
+ {:resolve, {"dns-sd.org.", 80, [{"txtvers", "1"}, {"path", "/"}]}}}
+:ok
+```
 
 Unlike the other operations results won't be tagged add or remove as the
 underlying DNS-SD API does not provide this information. As resolve is generally
@@ -97,8 +105,10 @@ and `txt_strings` is a list containing either binaries or should a given string
 contain an equals sign, a `{key, value}` tuple wherein `key` is everything up to
 the first equals sign and the remainder of the string is the value.
 
-    iex> :dnssd.resolve_sync(" * DNS Service Discovery", "_http._tcp.", "dns-sd.org.")
-    {:ok, {"dns-sd.org.", 80, [{"txtvers", "1"}, {"path", "/"}]}}
+```elixir
+iex> :dnssd.resolve_sync(" * DNS Service Discovery", "_http._tcp.", "dns-sd.org.")
+{:ok, {"dns-sd.org.", 80, [{"txtvers", "1"}, {"path", "/"}]}}
+```
 
 A synchronous wrapper to resolve is also provided. A timeout in milliseconds can
 also be specified by adding a fourth argument. The default timeout is 5 seconds.
@@ -106,12 +116,14 @@ also be specified by adding a fourth argument. The default timeout is 5 seconds.
 
 ### Registering Services
 
-    iex> :dnssd.register("_answer._udp", 42)
-    {:ok, #Reference<0.0.4.1929>}
-    iex> flush()
-    {:dnssd, #Reference<0.0.4.1929>,
-     {:register, :add, {"atj-mbp", "_answer._udp.", "local."}}}
-    :ok
+```elixir
+iex> :dnssd.register("_answer._udp", 42)
+{:ok, #Reference<0.0.4.1929>}
+iex> flush()
+{:dnssd, #Reference<0.0.4.1929>,
+ {:register, :add, {"atj-mbp", "_answer._udp.", "local."}}}
+:ok
+```
 
 The minimum arguments needed to register a service are the service type and
 port. If no service name is supplied, the machines name is used (in the example
@@ -120,10 +132,12 @@ containing binaries of the form `{service_name, service_type, domain}`.
 
 For brevity, the alternative invocations of register are:
 
-    :dnssd.register(name, type, port).
-    :dnssd.register(type, port, pxt).
-    :dnssd.register(name, type, port, txt).
-    :dnssd.register(name, type, port, txt, host, domain).
+```elixir
+:dnssd.register(name, type, port).
+:dnssd.register(type, port, pxt).
+:dnssd.register(name, type, port, txt).
+:dnssd.register(name, type, port, txt, host, domain).
+```
 
 Wherein:
 
@@ -146,32 +160,29 @@ on the local machine.
 
 ### Enumerating Domains
 
-    iex> :dnssd.enumerate(:browse)
-    {:ok, #Reference<0.0.4.1947>}
-    iex> flush()
-    {:dnssd, #Reference<0.0.4.1947>, {:enumerate, :add, "local."}}
-    {:dnssd, #Reference<0.0.0.1947>, {:enumerate, :add, "bonjour.tj.id.au."}}
-    :ok
+```elixir
+iex> :dnssd.enumerate(:browse)
+{:ok, #Reference<0.0.4.1947>}
+iex> flush()
+{:dnssd, #Reference<0.0.4.1947>, {:enumerate, :add, "local."}}
+{:dnssd, #Reference<0.0.0.1947>, {:enumerate, :add, "bonjour.tj.id.au."}}
+:ok
+```
 
-    iex> :dnssd.enumerate(:reg)
-    {:ok, #Reference<0.0.4.1962>}
-    iex> flush()
-    {:dnssd, #Reference<0.0.4.1962>, {:enumerate, :add, "local."}}
-    {:dnssd, #Reference<0.0.4.1962>, {:enumerate, :add, "bonjour.tj.id.au."}}
-    :ok
+```elixir
+iex> :dnssd.enumerate(:reg)
+{:ok, #Reference<0.0.4.1962>}
+iex> flush()
+{:dnssd, #Reference<0.0.4.1962>, {:enumerate, :add, "local."}}
+{:dnssd, #Reference<0.0.4.1962>, {:enumerate, :add, "bonjour.tj.id.au."}}
+:ok
+```
 
 The result term for this operation is a binary containing the browse or
 registration domain.
 
-### Stopping Operations
-
-It's important to stop operations when no more results are needed to avoid
-generating needless network traffic. To stop an operation pass the reference
-returned when you started the operation to `:dnssd.stop/1`. Operations will also
-be stopped if your process exits.
-
 ### Retrieving Results
 
 Results from a running operation can be retrieved by calling
-`:dnssd.results(Ref)`. For resolve operations this will only return the last
+`:dnssd.results(ref)`. For resolve operations this will only return the last
 result. For all other operations it will return all current results.
