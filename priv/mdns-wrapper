@@ -5,12 +5,12 @@
 
 MDNSD_PID=
 
-function kill_mdnsd {
+kill_mdnsd () {
   test -z "$MDNSD_PID" || kill -15 "$MDNSD_PID"
   exit 0
 }
 
-trap kill_mdnsd PIPE INT TERM EXIT
+trap kill_mdnsd PIPE INT TERM CHLD EXIT
 
 sbin/mdnsd -debug &
 
