@@ -2,18 +2,30 @@
 
 set -e
 
-if [ "$1" -eq ""]
+if [ ! -x /tmp/switch1 ]
 then
-  echo "Usage: $0 <number>"
-  echo "Number should be a positive integer between 0 and 99"
+  echo "VDE switch is not present. Start with:"
+  echo "\tvde_switch -F -sock /tmp/switch1"
+  echo "\tslirpvde -s /tmp/switch1 -dhcp"
   exit 1
 fi
 
-export MIX_TARGET=qemu_arm
+if [ "$1" == "" ]
+then
+  MAC=$(($RANDOM % 99))
+  echo "Assigning random MAC address (...:${MAC})"
+else
+  MAC=$1
+  echo "Assigning MAC address (...:${MAC})"
+fi
 
-IMAGE=_build/qemu_arm-$1.img
-KERNEL=~/.nerves/artifacts/nerves_system_qemu_arm-0.11.0.arm_unknown_linux_gnueabihf/images/zImage
-DTB=~/.nerves/artifacts/nerves_system_qemu_arm-0.11.0.arm_unknown_linux_gnueabihf/images/vexpress-v2p-ca9.dtb
+
+export MIX_TARGET=qemu_arm
+QEMU_ARM_VERSION=0.11.0
+
+IMAGE=_build/qemu_arm-$MAC.img
+KERNEL=~/.nerves/artifacts/nerves_system_qemu_arm-${QEMU_ARM_VERSION}.arm_unknown_linux_gnueabihf/images/zImage
+DTB=~/.nerves/artifacts/nerves_system_qemu_arm-${QEMU_ARM_VERSION}.arm_unknown_linux_gnueabihf/images/vexpress-v2p-ca9.dtb
 
 test -d deps/qemu_arm || mix deps.get
 
@@ -24,4 +36,4 @@ qemu-system-arm -M vexpress-a9 -smp 1 -m 256 -kernel ${KERNEL} \
 	-drive file=${IMAGE},if=sd,format=raw \
 	-append "console=ttyAMA0,115200 root=/dev/mmcblk0p2" \
 	-serial stdio \
-	-net nic,macaddr=52:54:00:12:34:$1 -net vde,sock=/tmp/switch1
+	-net nic,macaddr=52:54:00:12:34:$MAC -net vde,sock=/tmp/switch1

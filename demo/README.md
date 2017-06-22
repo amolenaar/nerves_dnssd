@@ -22,30 +22,24 @@ Now let's start up a network in two separate terminals:
 
 Launch one instance of the demo app:
 
-    $ ./launch.sh 1
+    $ ./launch.sh
 
-And another one:
+When the emulator is booting, launch another:
 
-    $ ./launch.sh 2
+    $ ./launch.sh
 
 If you experience exceptions when launching, you may want to remove the
 `_build` and the `priv` folder in the `nerves_dnssd` project. There is a fair
 chance the applications are not compiled for the ARM platform. This is less of
 a problem when you include the app as a normal dependency.
 
-Ensure yourself that both emulations have received unique IP addresses.
 
-Start the daemon process and our dnssd application in both emulators:
+The daemon process and our dnssd application will automatically start in both emulators:
 
-    iex> Nerves.Dnssd.Daemon.start_link
-    {:ok, #PID<0.118.0>}
-    iex(2)> mDNSResponder (Engineering Build) (Jun 15 2017 23:37:07) starting
+    mDNSResponder (Engineering Build) (Jun 15 2017 23:37:07) starting
     setsockopt - SO_RECV_ANYIF: Protocol not available
     mDNS_AddDNSServer: Lock not held! mDNS_busy (0) mDNS_reentrancy (0)
     CheckNATMappings: Failed to allocate port 5350 UDP multicast socket for PCP & NAT-PMP announcements
-
-    iex> :dnssd_app.start
-    {:ok, #PID<0.121.0>}
 
 Warnings as shown above are no problem for a well-functioning demo.
 
