@@ -1,15 +1,22 @@
 defmodule Nerves.Dnssd do
   @moduledoc """
-  Start the mdns daemon as a port process.
+  The `Nerves.Dnssd` application.
+
+  The application will (in an embedded setting) manage the mDNS daemon.
+  Via the config option `:daemon_restart` the start behaviour can be managed.
+  Default is `:permanent`. On a desktop there may already be a daemon running,
+  so a failed start should just be ignored.
+
+  Once the application is started services can be registered and browsed via
+  the [Erlang API](readme.html#example-use).
   """
 
-  @doc """
-  """
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
     :ok = :dnssd_drv.load()
-    daemon_restart = Application.get_env(:nerves_dnssd, :daemon_restart, :transient)
+
+    daemon_restart = Application.get_env(:nerves_dnssd, :daemon_restart, :permanent)
 
     children = [
       worker(Nerves.Dnssd.Daemon, [], restart: daemon_restart),

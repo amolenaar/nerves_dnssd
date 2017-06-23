@@ -10,6 +10,7 @@ defmodule Nerves.Dnssd.Mixfile do
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
      deps: deps(),
+     docs: docs(),
      compilers: [:elixir_make] ++ Mix.compilers,
      make_env: %{
        "BUILD_DIR"   => Mix.Project.build_path()
@@ -32,6 +33,18 @@ defmodule Nerves.Dnssd.Mixfile do
 
   defp deps do
     [{:elixir_make, "~> 0.4", runtime: false},
-     {:mix_eunit, "~> 0.3.0", runtime: false}]
+     {:mix_eunit, "~> 0.3.0", runtime: false},
+     {:ex_doc, "~> 0.15.1", only: :dev, runtime: false},
+     {:credo, "~> 0.7.4", only: :dev, runtime: false},
+     {:dialyxir, "~> 0.4", only: :dev, runtime: false}]
   end
+
+defp docs do
+    [ main: "README",
+      extras: [
+        "README.md",
+        "overview.md"
+    ]]
+  end
+
 end

@@ -8,6 +8,7 @@ behind a NAT gateway Bonjour will only advertise it if a port forward can be
 negotiated via NAT-PMP or uPNP (which is attempted automatically).
 
 This module is based on the `dnssd_erlang` project written by
+[Andrew Tunnell-Jones](http://andrew.tj.id.au/),
 [Benoit Chesneau](https://github.com/benoitc/dnssd_erlang),
 [Radosław Szymczyszyn](https://github.com/erszcz/dnssd_erlang) and others.
 
@@ -24,9 +25,15 @@ def deps do
 end
 ```
 
+If you are running Linux with Avahi you will need Avahi's Bonjour compatibility
+layer installed. If `{error,-65537}` is returned when starting an operation
+it may be that avahi-daemon is not running.
+
+This module has not been tested on Windows.
+
 ## Example use
 
-The examples below demonstrate how to use the low level interface.
+The examples below demonstrate how to use the service discovery interface.
 An end-to-end example can be found in the demo folder.
 
 The examples have been translated to Elixir from the original (erlang) examples.
@@ -134,7 +141,7 @@ For brevity, the alternative invocations of register are:
 
 ```elixir
 :dnssd.register(name, type, port).
-:dnssd.register(type, port, pxt).
+:dnssd.register(type, port, txt).
 :dnssd.register(name, type, port, txt).
 :dnssd.register(name, type, port, txt, host, domain).
 ```
