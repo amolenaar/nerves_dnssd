@@ -9,7 +9,6 @@ negotiated via NAT-PMP or uPNP (which is attempted automatically).
 
 This module is based on the `dnssd_erlang` project written by
 [Andrew Tunnell-Jones](http://andrew.tj.id.au/),
-[Benoit Chesneau](https://github.com/benoitc/dnssd_erlang),
 [Radosław Szymczyszyn](https://github.com/erszcz/dnssd_erlang) and others.
 
 ## Installation
