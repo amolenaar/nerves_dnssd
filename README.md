@@ -1,4 +1,8 @@
-# Nerves.Dnssd [![Build Status](https://travis-ci.org/amolenaar/nerves_dnssd.svg?branch=master)](https://travis-ci.org/amolenaar/nerves_dnssd)
+# Nerves.Dnssd
+
+[![Build Status](https://travis-ci.org/amolenaar/nerves_dnssd.svg?branch=master)](https://travis-ci.org/amolenaar/nerves_dnssd)
+[![Hex.pm package](https://img.shields.io/hexpm/v/nerves_dnssd.svg)](https://hex.pm/packages/nerves_dnssd)
+[![Hex.pm package](https://img.shields.io/hexpm/l/nerves_dnssd.svg)](https://hex.pm/packages/nerves_dnssd)
 
 Nerves.Dnssd provides an interface to Apple's Bonjour DNS Service Discovery
 implementation. Bonjour allows applications to browse, resolve and register
