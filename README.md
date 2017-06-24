@@ -143,10 +143,10 @@ containing binaries of the form `{service_name, service_type, domain}`.
 For brevity, the alternative invocations of register are:
 
 ```elixir
-:dnssd.register(name, type, port).
-:dnssd.register(type, port, txt).
-:dnssd.register(name, type, port, txt).
-:dnssd.register(name, type, port, txt, host, domain).
+:dnssd.register(name, type, port)
+:dnssd.register(type, port, txt)
+:dnssd.register(name, type, port, txt)
+:dnssd.register(name, type, port, txt, host, domain)
 ```
 
 Wherein:
