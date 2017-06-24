@@ -4,13 +4,14 @@ defmodule Nerves.Dnssd.Mixfile do
   def project do
     [app: :nerves_dnssd,
      version: "0.1.0",
-     desciption: "Apple Bonjour DNS Service Discovery for the Nerves platform",
+     description: "Bonjour/Zeroconf DNS Service Discovery for the Nerves platform",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
      deps: deps(),
      docs: docs(),
+     package: package(),
      compilers: [:elixir_make] ++ Mix.compilers,
      make_env: %{
        "BUILD_DIR"   => Mix.Project.build_path()
@@ -18,11 +19,7 @@ defmodule Nerves.Dnssd.Mixfile do
      make_clean: ["clean"]]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type "mix help compile.app" for more information
   def application do
-    # Specify extra applications you'll use from Erlang/Elixir
     [mod: {Nerves.Dnssd, []},
      extra_applications: [:logger]]
   end
@@ -39,12 +36,17 @@ defmodule Nerves.Dnssd.Mixfile do
      {:dialyxir, "~> 0.4", only: :dev, runtime: false}]
   end
 
-defp docs do
-    [ main: "README",
-      extras: [
-        "README.md",
-        "overview.md"
-    ]]
+  defp docs do
+    [main: "readme",
+     extras: [
+       "README.md",
+       "overview.md"]]
   end
 
+  def package do
+    [licenses: ["Apache 2.0"],
+     maintainers: ["Arjan Molenaar"],
+     files: ["lib", "src", "c_src", "priv/mdns-wrapper", "LICENSE", "mix.exs", "Makefile", "README.md", "overview.md"],
+     links: %{"GitHub" => "https://github.com/amolenaar/nerves_dnssd"}]
+  end
 end
