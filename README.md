@@ -15,7 +15,7 @@ This module is based on the `dnssd_erlang` project written by
 
 Nerves_dnssd requires Erlang R19 or later and Elixir 1.4.2 or later.
 
-Once [available in Hex](https://hex.pm/docs/publish), the package can be installed
+The package can be installed
 by adding `nerves_mdns` to your list of dependencies in `mix.exs`:
 
 ```elixir

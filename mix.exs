@@ -31,8 +31,8 @@ defmodule Nerves.Dnssd.Mixfile do
   defp deps do
     [{:elixir_make, "~> 0.4", runtime: false},
      {:mix_eunit, "~> 0.3.0", runtime: false},
-     {:ex_doc, "~> 0.15.1", only: :dev, runtime: false},
-     {:credo, "~> 0.7.4", only: :dev, runtime: false},
+     {:ex_doc, "~> 0.16.1", only: :dev, runtime: false},
+     {:credo, "~> 0.8.1", only: :dev, runtime: false},
      {:dialyxir, "~> 0.4", only: :dev, runtime: false}]
   end
 
