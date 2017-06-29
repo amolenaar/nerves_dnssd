@@ -51,7 +51,7 @@ ERL_LDFLAGS ?= -L$(ERL_EI_LIBDIR) -lei
 # from  mDNSResponder-$(VERSION)/mDNSPosix/Makefile:
 CLIENTLIBOBJS = $(BUILD_DRV_DIR)/dnssd_clientlib.c.so.o $(BUILD_DRV_DIR)/dnssd_clientstub.c.so.o $(BUILD_DRV_DIR)/dnssd_ipc.c.so.o
 
-.PHONY: all clean daemon lib
+.PHONY: all clean daemon lib driver
 
 all: daemon lib driver
 
@@ -74,7 +74,7 @@ $(BUILD_DIR)/mDNSResponder-$(VERSION): deps/mDNSResponder-$(VERSION).tar.gz
 ##
 # The daemon
 #
-# TODO: can be done in one shot
+
 $(BUILD_DIR)/mdnsd/mdnsd: $(BUILD_DIR)/mDNSResponder-$(VERSION)
 	make -C $(BUILD_DIR)/mDNSResponder-$(VERSION)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_DIR)/mdnsd $(TARGET_OPTS)
 
@@ -98,4 +98,4 @@ $(INSTALL_DIR)/priv/dnssd_drv.so: $(BUILD_DRV_DIR)/dnssd.o $(CLIENTLIBOBJS)
 	$(LD) $+ $(ERL_LDFLAGS) $(LDFLAGS) -o $@
 
 clean:
-	rm -rf $(BUILD_DIR)/mDNSResponder-$(VERSION) $(BUILD_DIR)/dnssd_drv $(BUILD_DIR)/mdnsd priv/dnssd_drv.so priv/sbin/mdnsd
+	rm -rf $(BUILD_DIR)/mDNSResponder-$(VERSION) $(BUILD_DIR)/dnssd_drv $(BUILD_DIR)/mdnsd

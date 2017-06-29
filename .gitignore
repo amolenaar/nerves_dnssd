@@ -5,8 +5,6 @@ deps
 /.fetch
 erl_crash.dump
 *.ez
-priv/*.so
-priv/sbin/mdnsd
 *.o
 *.so
 *.app

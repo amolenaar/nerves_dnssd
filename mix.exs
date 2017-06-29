@@ -1,3 +1,23 @@
+defmodule Mix.Tasks.Compile.MdnsResponder do
+  def run(_args), do: make("all")
+
+  def clean(_args), do: make("clean")
+
+  defp make(target) do
+    Mix.shell.print_app()
+    if match? {:win32, _}, :os.type do
+      # We do not support Windows fow now.
+      IO.warn("Windows is not supported.")
+      exit(1)
+    else
+      {_result, _error_code} = System.cmd("make", [target], into: IO.stream(:stdio, :line), env: [
+        {"BUILD_DIR", Mix.Project.build_path()},
+        {"INSTALL_DIR", Mix.Project.build_path() <> "/lib/nerves_dnssd"}])
+    end
+    :ok
+  end
+end
+
 defmodule Nerves.Dnssd.Mixfile do
   use Mix.Project
 
@@ -6,17 +26,13 @@ defmodule Nerves.Dnssd.Mixfile do
      version: "0.1.1",
      description: "Bonjour/Zeroconf DNS Service Discovery for the Nerves platform",
      elixir: "~> 1.4",
-     build_embedded: Mix.env == :prod,
+     build_embedded: true,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
      deps: deps(),
      docs: docs(),
      package: package(),
-     compilers: [:elixir_make] ++ Mix.compilers,
-     make_env: %{
-       "BUILD_DIR"   => Mix.Project.build_path()
-     },
-     make_clean: ["clean"]]
+     compilers: [:mdns_responder] ++ Mix.compilers]
   end
 
   def application do
@@ -29,8 +45,7 @@ defmodule Nerves.Dnssd.Mixfile do
   end
 
   defp deps do
-    [{:elixir_make, "~> 0.4", runtime: false},
-     {:mix_eunit, "~> 0.3.0", runtime: false},
+    [{:mix_eunit, "~> 0.3.0", runtime: false},
      {:ex_doc, "~> 0.16.1", only: :dev, runtime: false},
      {:credo, "~> 0.8.1", only: :dev, runtime: false},
      {:dialyxir, "~> 0.4", only: :dev, runtime: false}]
