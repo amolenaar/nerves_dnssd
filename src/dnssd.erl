@@ -42,7 +42,7 @@
 -export([browse/1, browse/2]).
 -export([resolve/3, resolve_sync/3, resolve_sync/4]).
 -export([register/2, register/3, register/4, register/6]).
--export([query_record/2]).
+-export([query_record/2, query_record_sync/2, query_record_sync/3]).
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
@@ -248,6 +248,38 @@ query_record(Domain, RType)
   when ?IS_LIST_OR_BIN(Domain),
        ?IS_LIST_OR_BIN(RType) ->
     query_record(iolist_to_binary(Domain), iolist_to_binary(Domain)).
+
+-spec query_record_sync(domain(), rtype()) ->
+			  {ok, query_record_result()} | {error, _}.
+query_record_sync(Domain, RType) ->
+    query_record_sync(Domain, RType, 5000).
+
+-spec query_record_sync(domain(), rtype(), pos_integer()) ->
+			  {ok, query_record_result()} | {error, _}.
+query_record_sync(Domain, RType, Timeout) ->
+    case query_record(Domain, RType) of
+	{ok, Ref} ->
+	    receive_query_record(Ref, Timeout);
+	{error, Error} ->
+	    {error, Error}
+    end.
+
+receive_query_record(Ref, Timeout) ->
+    receive
+    {dnssd, Ref, {query_record, add, Result}} ->
+        ok = stop(Ref),
+        ok = flush(Ref),
+        {ok, Result};
+    {dnssd, Ref, {query_record, remove, _}} ->
+        receive_query_record(Ref, Timeout);
+    {dnssd, Ref, crash} ->
+        {error, crash}
+    after
+    Timeout ->
+        ok = stop(Ref),
+        ok = flush(Ref),
+        {error, timeout}
+    end.
 
 -ifdef(AVAHI).
 ensure_safe_name(<<>>) ->
