@@ -17,7 +17,7 @@ defmodule NervesDnssdDemo.Mixfile do
      archives: [nerves_bootstrap: "~> 0.3.0"],
      deps_path: "deps/#{@target}",
      build_path: "_build/#{@target}",
-     build_embedded: true,
+     build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(@target),
      deps: deps()]
