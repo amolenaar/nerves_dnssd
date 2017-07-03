@@ -33,7 +33,8 @@ defmodule NervesDnssdDemo.Mixfile do
   # applications which could cause the host to fail. Because of this, we only
   # invoke NervesDnssdDemo.start/2 when running on a target.
   def application("host") do
-    [extra_applications: [:logger]]
+    [mod: {NervesDnssdDemo.Application, []},
+    extra_applications: [:logger]]
   end
   def application(_target) do
     [mod: {NervesDnssdDemo.Application, []},

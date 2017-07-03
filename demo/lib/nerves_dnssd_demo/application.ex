@@ -8,8 +8,11 @@ defmodule NervesDnssdDemo.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    if Application.get_env(:nerves_dnssd_demo, :networking, true),
-      do: Nerves.Networking.setup @interface
+    if Application.get_env(:nerves_dnssd_demo, :networking, true) do
+      Nerves.Networking.setup @interface
+    end
+
+    announce_node()
 
     # Define workers and child supervisors to be supervised
     children = [
@@ -21,4 +24,11 @@ defmodule NervesDnssdDemo.Application do
     opts = [strategy: :one_for_one, name: NervesDnssdDemo.Supervisor]
     Supervisor.start_link(children, opts)
   end
+
+  def announce_node do
+    IO.puts "Registering node as #{:erlang.node}\n"
+    {:ok, local_ip} = :dnssd_epmd_stub.local_port_please()
+    :dnssd.register(Atom.to_string(:erlang.node), "_epmd._tcp", local_ip)
+  end
+
 end
