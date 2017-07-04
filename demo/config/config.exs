@@ -29,3 +29,6 @@ config :bootloader,
   overlay_path: "/tmp/erl_bootloader",
   init: [:nerves_runtime],
   app: :nerves_dnssd_demo
+
+config :nerves, :firmware,
+  rootfs_additions: "rootfs-additions"
