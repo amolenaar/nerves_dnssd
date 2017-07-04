@@ -93,7 +93,7 @@ After a little while, you'll receive a notification that the service is gone:
 
 ## Work in progress
 
-### Expose erl_distribution over Bonjour
+### Distributed Erlang over Bonjour
 
     $ mix compile
     $ iex --erl "-proto_dist dnssd -start_epmd false -epmd_module dnssd_epmd_stub -pa _build/host/dev/lib/nerves_dnssd_demo/ebin" --sname demo1 --cookie demo -S mix
@@ -109,4 +109,11 @@ The nodes are linked!
     iex(demo1@mynode)> :erlang.nodes
     [:"demo2@mynode"]
 
+
+Start a remote shell:
+
+    iex(demo1@mynode)> Node.spawn :"demo2@mynode", fn -> IEx.start end
+
+
+TODO: put the node name in a Txt field and use a human readable name as lookup name. Does this work?
 

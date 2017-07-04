@@ -11,20 +11,29 @@ defmodule Nerves.Dnssd do
   the [Erlang API](readme.html#example-use).
   """
 
+  import Supervisor.Spec, only: [worker: 3]
+
   def start(_type, _args) do
-    import Supervisor.Spec, warn: false
 
     :ok = :dnssd_drv.load()
 
-    daemon_restart = Application.get_env(:nerves_dnssd, :daemon_restart, :permanent)
-
-    children = [
-      worker(Nerves.Dnssd.Daemon, [], restart: daemon_restart),
+    children = daemon_worker() ++ [
       worker(:dnssd_server, [], restart: :permanent)
     ]
 
     opts = [strategy: :one_for_one, name: Nerves.Dnssd.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  def daemon_worker do
+    case Application.get_env(:nerves_dnssd, :daemon_restart, :permanent) do
+      :ignore ->
+         []
+      r when r in [:permanent, :transient, :temporary] ->
+        [worker(Nerves.Dnssd.Daemon, [], restart: r)]
+      other ->
+        raise "Invalid Nerves Dnssd daemon start policy #{other}, should be one of :ignore, :permanent, :transient or :temporary."
+    end
   end
 
   def stop(_state) do
