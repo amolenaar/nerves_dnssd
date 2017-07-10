@@ -13,4 +13,4 @@ before_script:
 - sudo chmod 777 /run
 
 script:
-- MIX_ENV=test mix do compile test
+- MIX_ENV=test mix do compile, test
