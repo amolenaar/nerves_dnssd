@@ -59,7 +59,8 @@ accept_connection(AcceptPid, Socket, MyNode, Allowed, SetupTime) ->
 %% ------------------------------------------------------------
 
 trace(Fmt, Args) ->
-    io:format("~p ~p:~s",[erlang:timestamp(),node(),lists:flatten(io_lib:format(Fmt, Args))]).
+    ok.
+    % io:format("~p ~p:~s",[erlang:timestamp(),node(),lists:flatten(io_lib:format(Fmt, Args))]).
 
 setup(Node, Type, MyNode, shortnames, SetupTime) ->
     trace("~p~n",[{dnssd_dist,self(),setup,Node,Type, MyNode, SetupTime}]),
