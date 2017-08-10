@@ -20,8 +20,8 @@ defmodule NervesDnssdDemo.Application do
 
   def announce_node do
     Logger.info "Registering node as #{:erlang.node}"
-    {:ok, local_ip} = :dnssd_epmd_stub.local_port_please()
-    :dnssd.register(Atom.to_string(:erlang.node), "_epmd._tcp", local_ip)
+    {:ok, local_name, local_ip} = :dnssd_epmd_stub.local_port_please()
+    :dnssd.register(local_name, "_epmd._tcp", local_ip, [{"node", :erlang.node}])
   end
 
 end

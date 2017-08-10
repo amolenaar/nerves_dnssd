@@ -74,9 +74,9 @@ do_setup(Driver, Kernel, Node, Type, MyNode, SetupTime) ->
     AddressFamily = Driver:family(),
     ErlEpmd = net_kernel:epmd_module(),
     case ErlEpmd:port_please(Node) of
-    {port, Hostname, Ip, TcpPort, Version} ->  % list, tuple(int), int, int
+    {port, NodeName, Hostname, Ip, TcpPort, Version} ->  % list, tuple(int), int, int
         trace("port_please(~p) -> version ~p~n",
-            [Node,Version]),
+            [NodeName, Version]),
         dist_util:reset_timer(Timer),
         case
         Driver:connect(
@@ -87,7 +87,7 @@ do_setup(Driver, Kernel, Node, Type, MyNode, SetupTime) ->
             trace("Socket opened ~p", [{self(), erlang:port_info(Socket)}]),
             HSData = #hs_data{
                 kernel_pid = Kernel,
-                other_node = Node,
+                other_node = NodeName,
                 this_node = MyNode,
                 socket = Socket,
                 timer = Timer,

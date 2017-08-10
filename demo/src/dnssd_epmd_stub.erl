@@ -60,11 +60,11 @@ port_please(Name) when is_atom(Name) ->
 port_please(Name) when is_binary(Name) ->
     % TODO: resolve Name._epmd._tcp.local ,
     case gen_server:call(?MODULE, {port_please, Name}) of
-        {ok, Hostname, Ip, Port} ->
+        {ok, NodeName, Hostname, Ip, Port} ->
             %% The distribution protocol version number has been 5 ever since
             %% Erlang/OTP R6.
             Version = 5,
-            {port, Hostname, Ip, Port, Version};
+            {port, NodeName, Hostname, Ip, Port, Version};
         {error, Reason} ->
             {error, Reason}
     end.
@@ -96,12 +96,12 @@ handle_call({register_node, Name, Port, inet_tcp}, _From, State) ->
 
 handle_call({port_please, Name}, _From, State) ->
     case dnssd:resolve_sync(Name, "_epmd._tcp", "local") of
-        {ok, {Hostname, Port, TxtStrings}} ->
-            io:format("EPMD: port_please ok ~p ~p ~p ~p~n", [Name, Hostname, Port, TxtStrings]),
+        {ok, {Hostname, Port, [{<<"node">>, NodeName}]}} ->
+            io:format("EPMD: port_please ok ~p ~p ~p ~p~n", [Name, NodeName, Hostname, Port]),
             case dnssd:query_record_sync(Hostname, <<"A">>) of
                 {ok, {Hostname, <<"A">>, <<"IN">>, <<A, B, C, D>>}} ->
                     io:format("EPMD: port_please query ok ~p ~p ~p ~p~n", [Name, binary_to_list(Hostname), {A, B, C, D}, Port]),
-                    {reply, {ok, binary_to_list(Hostname), {A, B, C, D}, Port}, State};
+                    {reply, {ok, list_to_atom(binary_to_list(NodeName)), binary_to_list(Hostname), {A, B, C, D}, Port}, State};
                 {error, Reason} ->
                     io:format("EPMD: port_please query error ~p ~p~n", [Hostname, Reason]),
                     {reply, {error, Reason}, State}
@@ -111,8 +111,8 @@ handle_call({port_please, Name}, _From, State) ->
             {reply, {error, Reason}, State}
     end;
 
-handle_call(port, _From, #state{port = Port} = State) ->
-    {reply, {ok, Port}, State}.
+handle_call(port, _From, #state{name = Name, port = Port} = State) ->
+    {reply, {ok, Name, Port}, State}.
 
 handle_cast(_, State) ->
     {noreply, State}.
