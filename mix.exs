@@ -8,13 +8,18 @@ defmodule Mix.Tasks.Compile.MdnsResponder do
     if match? {:win32, _}, :os.type do
       # We do not support Windows fow now.
       IO.warn("Windows is not supported.")
-      exit(1)
+      exit({:shutdown, 1})
     else
-      {_result, _error_code} = System.cmd("make", [target], into: IO.stream(:stdio, :line), env: [
+      # TODO: Exit if Makefile execution fails
+      case System.cmd("make", [target], into: IO.stream(:stdio, :line), env: [
         {"BUILD_DIR", Mix.Project.build_path()},
-        {"INSTALL_DIR", Mix.Project.build_path() <> "/lib/nerves_dnssd"}])
+        {"INSTALL_DIR", Mix.Project.build_path() <> "/lib/nerves_dnssd"}]) do
+        {_into, 0} -> :ok
+        {_into, exit_code} ->
+          IO.warn("Build of mDNS daemon and library failed (#{inspect exit_code})")
+          exit({:shutdown, exit_code})
+      end
     end
-    :ok
   end
 end
 
