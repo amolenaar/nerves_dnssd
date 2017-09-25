@@ -5,7 +5,10 @@ defmodule Nerves.Dnssd do
   The application will (in an embedded setting) manage the mDNS daemon.
   Via the config option `:daemon_restart` the start behaviour can be managed.
   Default is `:permanent`. On a desktop there may already be a daemon running,
-  so a failed start should just be ignored.
+  so a failed start should just be ignored, by either setting this property
+  to `:temporary` (try once and ignore failure) or `:ignore`. `:transient` may
+  also be set if desired, although `:permanent` is probably prefered in such
+  circumstances.
 
   Once the application is started services can be registered and browsed via
   the [Erlang API](readme.html#example-use).
