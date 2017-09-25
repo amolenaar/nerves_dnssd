@@ -21,7 +21,7 @@ fi
 
 
 export MIX_TARGET=qemu_arm
-QEMU_ARM_VERSION=0.11.0
+QEMU_ARM_VERSION=0.12.2
 
 IMAGE=_build/qemu_arm-$MAC.img
 KERNEL=~/.nerves/artifacts/nerves_system_qemu_arm-${QEMU_ARM_VERSION}.arm_unknown_linux_gnueabihf/images/zImage
@@ -31,6 +31,7 @@ test -d deps/qemu_arm || mix deps.get
 
 mix do firmware, firmware.image ${IMAGE}
 
+echo "Booting image ${IMAGE}"
 qemu-system-arm -M vexpress-a9 -smp 1 -m 256 -kernel ${KERNEL} \
 	-dtb ${DTB} \
 	-drive file=${IMAGE},if=sd,format=raw \

@@ -31,4 +31,4 @@ config :bootloader,
   app: :nerves_dnssd_demo
 
 config :nerves, :firmware,
-  rootfs_additions: "rootfs-additions"
+  rootfs_overlay: "rootfs-additions"

@@ -12,9 +12,9 @@ defmodule NervesDnssdDemo.Mixfile do
   def project do
     [app: :nerves_dnssd_demo,
      version: "0.1.0",
-     elixir: "~> 1.4.0",
+     elixir: "~> 1.5.0",
      target: @target,
-     archives: [nerves_bootstrap: "~> 0.3.0"],
+     archives: [nerves_bootstrap: "~> 0.6.0"],
      deps_path: "deps/#{@target}",
      build_path: "_build/#{@target}",
      build_embedded: Mix.env == :prod,
@@ -51,8 +51,8 @@ defmodule NervesDnssdDemo.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   def deps do
-    [{:nerves, "~> 0.5.0", runtime: false},
-     {:bootloader, github: "nerves-project/bootloader"},
+    [{:nerves, "~> 0.7.5", runtime: false},
+     {:bootloader, "~> 0.1.0"},
      {:nerves_dnssd, path: ".."}] ++
     deps(@target)
   end
@@ -60,10 +60,13 @@ defmodule NervesDnssdDemo.Mixfile do
   # Specify target specific dependencies
   def deps("host"), do: []
   def deps(target) do
-    [{:nerves_runtime, "~> 0.2.0"},
-     {:"nerves_system_#{target}", "~> 0.10", runtime: false},
-     {:nerves_networking, "~> 0.6.0"}]
+    [{:nerves_runtime, "~> 0.4.4"},
+     {:nerves_networking, "~> 0.6.0"},
+     nerves_system(target)]
   end
+
+  def nerves_system("qemu_arm"), do: {:"nerves_system_qemu_arm", "~> 0.12", runtime: false}
+  def nerves_system(target), do: {:"nerves_system_#{target}", "~> 0.16", runtime: false}
 
   # We do not invoke the Nerves Env when running on the Host
   def aliases("host"), do: []
