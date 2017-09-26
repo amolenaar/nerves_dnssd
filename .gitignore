@@ -16,6 +16,8 @@ erl_crash.dump
 *.bea#
 .DS_Store
 .eunit/
+.vscode/
+mDNSResponder-*/
 /priv/sbin
 
 _images
