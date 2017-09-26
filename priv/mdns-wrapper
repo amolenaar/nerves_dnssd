@@ -3,11 +3,16 @@
 # A little trick to shut down mdnsd when a port is closed.
 #
 
+cleanup () {
+  kill -15 "$MDNSD_PID"
+}
+
+trap "exit" INT TERM CHLD
+
+trap cleanup EXIT
+
 sbin/mdnsd -debug &
 MDNSD_PID=$!
-
-trap "kill -15 $MDNSD_PID" EXIT
-trap "exit" INT TERM CHLD
 
 # Read line from this process. If we terminate, we will shut down our child
 # process with a little force.
