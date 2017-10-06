@@ -56,13 +56,13 @@ CLIENTLIBOBJS = $(BUILD_DRV_DIR)/dnssd_clientlib.c.so.o $(BUILD_DRV_DIR)/dnssd_c
 all: daemon lib driver
 
 daemon: $(INSTALL_DIR)/priv/sbin/mdnsd
-	@echo $^ installed
+	@echo "===> $^ installed"
 
 lib: $(BUILD_DRV_DIR)/libdns_sd.so.1
-	@echo $^ compiled
+	@echo "===> $^ compiled"
 
 driver: lib $(INSTALL_DIR)/priv/dnssd_drv.so
-	@echo $^ installed
+	@echo "===> $^ installed"
 
 deps/mDNSResponder-$(VERSION).tar.gz:
 	curl https://opensource.apple.com/tarballs/mDNSResponder/mDNSResponder-$(VERSION).tar.gz -o deps/mDNSResponder-$(VERSION).tar.gz --create-dirs

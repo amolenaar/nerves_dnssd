@@ -4,19 +4,24 @@ defmodule Mix.Tasks.Compile.MdnsResponder do
   def clean(_args), do: make("clean")
 
   defp make(target) do
-    Mix.shell.print_app()
     if match? {:win32, _}, :os.type do
       # We do not support Windows fow now.
-      IO.warn("Windows is not supported.")
-      exit({:shutdown, 1})
+      Mix.raise("Windows is not supported")
     else
-      # TODO: Exit if Makefile execution fails
-      case System.cmd("make", [target], into: IO.stream(:stdio, :line), env: [
+      env = [
         {"BUILD_DIR", Mix.Project.build_path()},
-        {"INSTALL_DIR", Mix.Project.build_path() <> "/lib/nerves_dnssd"}]) do
-        {_into, 0} -> :ok
-        {_into, exit_code} ->
-          IO.warn("Build of mDNS daemon and library failed (#{inspect exit_code})")
+        {"INSTALL_DIR", Mix.Project.build_path() <> "/lib/nerves_dnssd"}
+      ]
+
+      case System.cmd("make", [target], into: [], env: env) do
+        {_stdout, 0} -> :ok
+        {stdout, exit_code} ->
+          ["--------- Makefile output ----------\n"] ++
+            stdout ++
+            ["------ End of Makefile output ------\n"]
+          |> Enum.map(fn (line) -> IO.write line end)
+
+          Mix.raise("Build of mDNS daemon and library failed (#{inspect exit_code})")
           exit({:shutdown, exit_code})
       end
     end
