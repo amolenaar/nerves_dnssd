@@ -37,7 +37,7 @@ This module has not been tested on Windows.
 ## Example use
 
 The examples below demonstrate how to use the service discovery interface.
-An end-to-end example can be found in the 
+An end-to-end example can be found in the
 [demo folder](https://github.com/amolenaar/nerves_dnssd/tree/master/demo).
 
 The examples have been translated to Elixir from the original (erlang) examples.

@@ -28,6 +28,7 @@ defmodule Nerves.Dnssd do
     Supervisor.start_link(children, opts)
   end
 
+  @doc false
   def daemon_worker do
     case Application.get_env(:nerves_dnssd, :daemon_restart, :permanent) do
       :ignore ->

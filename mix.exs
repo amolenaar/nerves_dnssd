@@ -66,7 +66,8 @@ defmodule Nerves.Dnssd.Mixfile do
     [main: "readme",
      extras: [
        "README.md",
-       "overview.md"]]
+       "overview.md",
+       "Changelog.md"]]
   end
 
   def package do
