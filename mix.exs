@@ -4,6 +4,7 @@ defmodule Mix.Tasks.Compile.MdnsResponder do
   def clean(_args), do: make("clean")
 
   defp make(target) do
+    Mix.shell.info("===> Compiling mdnsd binary")
     if match? {:win32, _}, :os.type do
       # We do not support Windows fow now.
       Mix.raise("Windows is not supported")
