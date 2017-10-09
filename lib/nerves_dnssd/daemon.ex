@@ -5,6 +5,7 @@ defmodule Nerves.Dnssd.Daemon do
 
   It is started as part of the `nerves_dnssd` application.
   """
+  use GenServer
 
   require Logger
 
@@ -23,19 +24,19 @@ defmodule Nerves.Dnssd.Daemon do
   end
 
   @doc false
-  def handle_info({_port, {:data, {:eol, 'ERROR: ' ++ message}}}, port) do
+  def handle_info({port, {:data, {:eol, 'ERROR: ' ++ message}}}, port) do
     Logger.error message
     {:noreply, port}
   end
 
   @doc false
-  def handle_info({_port, {:data, {:eol, 'WARNING: ' ++ message}}}, port) do
+  def handle_info({port, {:data, {:eol, 'WARNING: ' ++ message}}}, port) do
     Logger.warn message
     {:noreply, port}
   end
 
   @doc false
-  def handle_info({_port, {:data, {:eol, message}}}, port) do
+  def handle_info({port, {:data, {:eol, message}}}, port) do
     Logger.info message
     {:noreply, port}
   end
