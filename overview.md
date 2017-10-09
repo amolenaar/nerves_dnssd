@@ -5,7 +5,7 @@ Service Discovery enables applications to advertise and discover services both
 peer to peer on the local network using multicast DNS and over the internet
 using traditional unicast DNS and if needed NAT-PMP or uPNP for port forwarding.
 
-Bonjour and the DNSSD API are bundled with OS X. On Windows Bonjour is bundled
+Bonjour and the DNS-SD API are bundled with OS X. On Windows Bonjour is bundled
 with some Apple applications and is also available standalone in the form of
 [Bonjour Print Services for Windows](<http://support.apple.com/kb/DL999).
 The DNSSD API is made available via

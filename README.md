@@ -4,7 +4,7 @@
 [![Hex.pm package](https://img.shields.io/hexpm/v/nerves_dnssd.svg)](https://hex.pm/packages/nerves_dnssd)
 [![Hex.pm package](https://img.shields.io/hexpm/l/nerves_dnssd.svg)](https://hex.pm/packages/nerves_dnssd)
 
-Nerves.Dnssd provides an interface to Apple's Bonjour DNS Service Discovery
+Nerves_dnssd provides an interface to Apple's Bonjour DNS Service Discovery
 implementation. Bonjour allows applications to browse, resolve and register
 network services via link-local multicast DNS on the local network and via
 unicast DNS over the internet. In the later case if the service is running
@@ -20,11 +20,11 @@ This module is based on the `dnssd_erlang` project written by
 Nerves_dnssd requires Erlang R19 or later and Elixir 1.4.2 or later.
 
 The package can be installed
-by adding `nerves_mdns` to your list of dependencies in `mix.exs`:
+by adding `nerves_dnssd` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:nerves_dnssd, "~> 0.1.0"}]
+  [{:nerves_dnssd, "~> x.y"}]
 end
 ```
 
@@ -37,7 +37,8 @@ This module has not been tested on Windows.
 ## Example use
 
 The examples below demonstrate how to use the service discovery interface.
-An end-to-end example can be found in the demo folder.
+An end-to-end example can be found in the 
+[demo folder](https://github.com/amolenaar/nerves_dnssd/tree/master/demo).
 
 The examples have been translated to Elixir from the original (erlang) examples.
 
