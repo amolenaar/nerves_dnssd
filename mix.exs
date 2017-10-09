@@ -71,7 +71,7 @@ defmodule Nerves.Dnssd.Mixfile do
   def package do
     [licenses: ["Apache 2.0"],
      maintainers: ["Arjan Molenaar"],
-     files: ["lib", "src", "c_src", "LICENSE", "mix.exs", "Makefile", "README.md", "overview.md"],
+     files: ["lib", "src", "c_src", "LICENSE", "mix.exs", "Makefile", "README.md", "overview.md", "Changelog.md"],
      links: %{"GitHub" => "https://github.com/amolenaar/nerves_dnssd"}]
   end
 end
