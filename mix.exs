@@ -33,7 +33,7 @@ defmodule Nerves.Dnssd.Mixfile do
 
   def project do
     [app: :nerves_dnssd,
-     version: "0.1.1",
+     version: "0.2.0",
      description: "Bonjour/Zeroconf DNS Service Discovery for the Nerves platform",
      elixir: "~> 1.4",
      build_embedded: true,
