@@ -67,9 +67,10 @@ driver: lib $(INSTALL_DIR)/priv/dnssd_drv.so
 deps/mDNSResponder-$(VERSION).tar.gz:
 	curl https://opensource.apple.com/tarballs/mDNSResponder/mDNSResponder-$(VERSION).tar.gz -o deps/mDNSResponder-$(VERSION).tar.gz --create-dirs
 
-$(BUILD_DIR)/mDNSResponder-$(VERSION): deps/mDNSResponder-$(VERSION).tar.gz
+$(BUILD_DIR)/mDNSResponder-$(VERSION): deps/mDNSResponder-$(VERSION).tar.gz c_src/mDNSResponder.patch
 	mkdir -p $(BUILD_DIR)
 	tar xzf deps/mDNSResponder-$(VERSION).tar.gz -C $(BUILD_DIR)
+	patch -p 1 -d $(BUILD_DIR)/mDNSResponder-$(VERSION) < c_src/mDNSResponder.patch
 
 ##
 # The daemon

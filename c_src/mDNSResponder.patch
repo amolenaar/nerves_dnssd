@@ -1,0 +1,70 @@
+--- mDNSResponder-765.50.9.orig/mDNSPosix/PosixDaemon.c	2011-12-02 01:39:45.000000000 +0100
++++ mDNSResponder-765.50.9.new/mDNSPosix/PosixDaemon.c	2017-10-09 16:56:39.000000000 +0200
+@@ -98,26 +98,6 @@
+     mDNS_ConfigChanged(m);
+ }
+ 
+-// Do appropriate things at startup with command line arguments. Calls exit() if unhappy.
+-mDNSlocal void ParseCmdLinArgs(int argc, char **argv)
+-{
+-    if (argc > 1)
+-    {
+-        if (0 == strcmp(argv[1], "-debug")) mDNS_DebugMode = mDNStrue;
+-        else printf("Usage: %s [-debug]\n", argv[0]);
+-    }
+-
+-    if (!mDNS_DebugMode)
+-    {
+-        int result = daemon(0, 0);
+-        if (result != 0) { LogMsg("Could not run as daemon - exiting"); exit(result); }
+-#if __APPLE__
+-        LogMsg("The POSIX mdnsd should only be used on OS X for testing - exiting");
+-        exit(-1);
+-#endif
+-    }
+-}
+-
+ mDNSlocal void DumpStateLog(mDNS *const m)
+ // Dump a little log of what we've been up to.
+ {
+@@ -126,11 +106,29 @@
+     LogMsg("----  END STATE LOG  ----");
+ }
+ 
++mDNSlocal void CheckStdInClosed(int fd, short filter, void *context)
++{
++    int byte;
++    ssize_t bytes_read;
++
++    (void)filter; // Unused
++    (void)context; // Unused
++
++    bytes_read = read(fd, &byte, 1);
++    if (bytes_read == 0)
++    {
++        LogMsg("Stdin closed, terminating");
++        raise(SIGTERM);
++    }
++}
++
+ mDNSlocal mStatus MainLoop(mDNS *m) // Loop until we quit.
+ {
+     sigset_t signals;
+     mDNSBool gotData = mDNSfalse;
+ 
++    (void) mDNSPosixAddFDToEventLoop(STDIN_FILENO, CheckStdInClosed, NULL);
++
+     mDNSPosixListenForSignalInEventLoop(SIGINT);
+     mDNSPosixListenForSignalInEventLoop(SIGTERM);
+     mDNSPosixListenForSignalInEventLoop(SIGUSR1);
+@@ -172,7 +170,9 @@
+ {
+     mStatus err;
+ 
+-    ParseCmdLinArgs(argc, argv);
++    (void)argc; // Unused
++    (void)argv; // Unused
++    mDNS_DebugMode = mDNStrue;
+ 
+     LogMsg("%s starting", mDNSResponderVersionString);
+ 
