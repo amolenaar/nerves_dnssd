@@ -18,7 +18,7 @@ defmodule Nerves.Dnssd.Daemon do
 
   @doc false
   def init([]) do
-    port = Port.open({:spawn_executable, :code.priv_dir(:nerves_dnssd) ++ '/sbin/mdnsd'},
+    port = Port.open({:spawn_executable, :code.priv_dir(:nerves_dnssd) ++ '/mdnsd'},
                      [:exit_status, :stderr_to_stdout, line: 256])
     {:ok, port}
   end

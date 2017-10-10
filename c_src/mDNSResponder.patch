@@ -1,3 +1,6 @@
+This patch ensures that the mDNS daemon will not fork (daemonize) and will stop
+when the port used on the Erlang side is closed.
+
 --- mDNSResponder-765.50.9.orig/mDNSPosix/PosixDaemon.c	2011-12-02 01:39:45.000000000 +0100
 +++ mDNSResponder-765.50.9.new/mDNSPosix/PosixDaemon.c	2017-10-09 16:56:39.000000000 +0200
 @@ -98,26 +98,6 @@
