@@ -48,7 +48,7 @@ defmodule Nerves.Dnssd.Daemon do
 
   @doc false
   def handle_info({port, {:exit_status, status}}, port) do
-    Logger.warn "mdns server stopped with exit code #{status}, #{Port.info(port)}"
+    Logger.warn "mDNS server stopped with exit code #{status}"
     {:stop, {:mdnsd_exited, status}, port}
   end
 
