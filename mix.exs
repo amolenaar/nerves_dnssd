@@ -36,7 +36,7 @@ defmodule Nerves.Dnssd.Mixfile do
     [app: :nerves_dnssd,
      version: "0.2.1",
      description: "Bonjour/Zeroconf DNS Service Discovery for the Nerves platform",
-     elixir: "~> 1.4",
+     elixir: "~> 1.5",
      build_embedded: true,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
