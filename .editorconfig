@@ -7,3 +7,7 @@ trim_trailing_whitespace = true
 
 [*.{ex,exs}]
 indent_size = 2
+
+[Makefile]
+indent_style = tabs
+indent_size = 4
