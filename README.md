@@ -46,6 +46,20 @@ The examples have been translated to Elixir from the original (erlang) examples.
 
 This will start the `nerves_dnssd` application and possibly an mDNS service.
 
+In the most basic situation, where one wants to simply register a service
+on the network, calling
+
+    {:ok, pid} = Nerves.Dnssd.register("Fancy service name", "_http._tcp", 8080)
+
+is sufficient to register a HTTP service listening on port 8080. In case there is
+already a service named "Fancy service name" a new name will be determined by
+using a follow-up number and that name will be registered, so that after a restart
+the service will advertise itself with the same name.
+
+If you want to do more, you'll have to use the `:dnssd` interface.
+
+## `:dnssd` interface
+
 In the success case, all functions return a tuple of the form `{:ok, reference}`.
 Reference should be retained to pass to `:dnssd.stop/1` when no further results
 are required. Please note that proper handing of references is omitted in the
