@@ -28,6 +28,7 @@ $(error No configuration for system $(UNAME))
 endif
 
 CC ?= $(CROSSCOMPILER)gcc
+STRIP ?= $(CROSSCOMPILER)strip -S
 
 ifeq ($(TARGET_OS),x)
 LD = $(CC) -bundle -flat_namespace -undefined suppress
@@ -37,7 +38,7 @@ LD = $(CC) -shared
 endif
 
 CFLAGS += -fPIC
-LDFLAGS += 
+LDFLAGS +=
 BUILD_DIR ?= _build/make
 SRC_ROOT_DIR = $(BUILD_DIR)/mDNSResponder-$(VERSION)
 BUILD_DRV_DIR = $(BUILD_DIR)/dnssd_drv
@@ -81,7 +82,7 @@ $(SRC_ROOT_DIR): deps/mDNSResponder-$(VERSION).tar.gz c_src/mDNSResponder.patch
 #
 
 $(BUILD_MDNSD_DIR)/mdnsd: $(BUILD_DIR)/mDNSResponder-$(VERSION)
-	make -C $(SRC_ROOT_DIR)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_MDNSD_DIR) $(TARGET_OPTS)
+	make -C $(SRC_ROOT_DIR)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) STRIP="$(STRIP)" BUILDDIR=$(BUILD_MDNSD_DIR) $(TARGET_OPTS) 2>&1
 
 $(INSTALL_DIR)/priv/mdnsd: $(BUILD_MDNSD_DIR)/mdnsd
 	mkdir -p $(INSTALL_DIR)/priv
@@ -93,7 +94,7 @@ $(INSTALL_DIR)/priv/mdnsd: $(BUILD_MDNSD_DIR)/mdnsd
 #
 
 $(BUILD_DRV_DIR)/libdns_sd.so.1: $(BUILD_DIR)/mDNSResponder-$(VERSION)
-	make -C $(SRC_ROOT_DIR)/mDNSPosix libdns_sd os=$(TARGET_OS) CC=$(CC) BUILDDIR=$(BUILD_DRV_DIR) OBJDIR=$(BUILD_DRV_DIR)
+	make -C $(SRC_ROOT_DIR)/mDNSPosix libdns_sd os=$(TARGET_OS) CC=$(CC) STRIP="$(STRIP)" BUILDDIR=$(BUILD_DRV_DIR) OBJDIR=$(BUILD_DRV_DIR) $(TARGET_OPTS) 2>&1
 
 $(BUILD_DRV_DIR)/dnssd.o: c_src/dnssd.c
 	$(CC) -c $(ERL_CFLAGS) $(CFLAGS) -I $(SRC_ROOT_DIR)/mDNSShared -o $@ $<
