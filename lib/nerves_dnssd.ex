@@ -19,7 +19,7 @@ defmodule Nerves.Dnssd do
   def start(_type, _args) do
 
     :ok = :dnssd_drv.load()
-    
+
     children = daemon_worker() ++ [
       worker(:dnssd_server, [], restart: :permanent),
       supervisor(Nerves.Dnssd.ServiceRegistrationSup, [], restart: :permanent)
