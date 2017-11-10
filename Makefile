@@ -39,8 +39,9 @@ endif
 
 CFLAGS += -fPIC
 LDFLAGS +=
-BUILD_DIR ?= _build/make
+
 SRC_ROOT_DIR = $(BUILD_DIR)/mDNSResponder-$(VERSION)
+BUILD_DIR ?= _build/make
 BUILD_DRV_DIR = $(BUILD_DIR)/dnssd_drv
 BUILD_MDNSD_DIR = $(BUILD_DIR)/mdnsd
 INSTALL_DIR ?= .
@@ -50,7 +51,6 @@ ERL_EI_INCLUDE_DIR ?= $(ROOTDIR)/usr/include
 ERL_EI_LIBDIR ?= $(ROOTDIR)/usr/lib
 ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
 ERL_LDFLAGS ?= -L$(ERL_EI_LIBDIR) -lei
-
 
 ###
 # from  mDNSResponder-$(VERSION)/mDNSPosix/Makefile:
