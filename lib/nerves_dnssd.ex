@@ -3,15 +3,24 @@ defmodule Nerves.Dnssd do
   The `Nerves.Dnssd` application.
 
   The application will (in an embedded setting) manage the mDNS daemon.
-  Via the config option `:daemon_restart` the start behaviour can be managed.
-  Default is `:permanent`. On a desktop there may already be a daemon running,
-  so a failed start should just be ignored, by either setting this property
-  to `:temporary` (try once and ignore failure) or `:ignore`. `:transient` may
-  also be set if desired, although `:permanent` is probably prefered in such
-  circumstances.
-
   Once the application is started services can be registered and browsed via
   the [Erlang API](readme.html#example-use).
+
+  In the most basic situation, where one wants to simply register a service
+  on the network, calling
+
+  ```elixir
+  iex> {:ok, pid} = Nerves.Dnssd.register("Fancy service name", "_http._tcp", 8080)
+  iex> is_pid(pid)
+  true
+  ```
+
+  is sufficient to register a HTTP service listening on port 8080. In case there is
+  already a service named "Fancy service name" a new name will be determined by
+  using a follow-up number and that name will be registered, so that after a restart
+  the service will advertise itself with the same name.
+
+  If you want to do more, you'll have to use the [`:dnssd`](dnssd.html) interface.
   """
 
   import Supervisor.Spec, only: [supervisor: 3, worker: 3]

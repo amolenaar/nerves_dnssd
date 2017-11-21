@@ -4,6 +4,12 @@ defmodule Nerves.Dnssd.Daemon do
   mDNS "daemon".
 
   It is started as part of the `nerves_dnssd` application.
+  Via the config option `:daemon_restart` the start behaviour can be managed.
+  Default is `:permanent`. On a desktop there may already be a daemon running,
+  so a failed start should just be ignored, by either setting this property
+  to `:temporary` (try once and ignore failure) or `:ignore`. `:transient` may
+  also be set if desired, although `:permanent` is probably prefered in such
+  circumstances.
   """
   use GenServer
 

@@ -2,6 +2,7 @@ defmodule Nerves.Dnssd.ServiceRegistration do
   @moduledoc """
   Ensure a service name survives an application restart.
 
+  The common interface is through [`Nerves.Dnssd.register()`](index.html)
   For example: I have 2 services on
   my network, both competing for a service name "Foo Service". The first service to
   be available on the network is claiming this name, hence the service that starts
