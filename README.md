@@ -9,8 +9,8 @@ implementation. Bonjour allows applications to browse, resolve and register
 network services via link-local multicast DNS on the local network and via
 unicast DNS over the internet.
 
-This module is based on the Dnssd_erlang project written by
-[Andrew Tunnell-Jones](http://andrew.tj.id.au/),
+This module is based on the [Dnssd_erlang](https://github.com/erszcz/dnssd_erlang)
+project written by [Andrew Tunnell-Jones](http://andrew.tj.id.au/),
 [Radosław Szymczyszyn](https://github.com/erszcz/dnssd_erlang) and others.
 
 ## Installation
