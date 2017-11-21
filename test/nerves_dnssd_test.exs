@@ -2,14 +2,15 @@ defmodule Nerves.DnssdTest do
   use ExUnit.Case
   doctest Nerves.Dnssd, import: true
 
+  def flush(), do: do_flush([])
   def flush(amount) when is_integer(amount) do
-    flush([]) |> Enum.take(amount)
+    do_flush([]) |> Enum.take(amount)
   end
 
-  def flush(acc \\ []) do
+  defp do_flush(acc) do
     receive do
       msg ->
-        flush(acc ++ [msg |> strip_ref()])
+        do_flush(acc ++ [msg |> strip_ref()])
     after
       1500 -> acc |> Enum.sort
     end
