@@ -1,4 +1,8 @@
 defmodule Nerves.Dnssd.ServiceRegistrationSup do
+  @moduledoc """
+  Supervisor for service registrations.
+  """
+
   use Supervisor
 
   @name __MODULE__
@@ -7,6 +11,13 @@ defmodule Nerves.Dnssd.ServiceRegistrationSup do
     Supervisor.start_link(__MODULE__, [], name: @name)
   end
 
+  @doc """
+  Register a new services. The service remains registered as long
+  as the registration process remains active.
+
+  Normally this would be the whole lifetime of the application.
+  """
+  @spec register(String.t, String.t, non_neg_integer, [String.t]) :: {:ok, pid} | {:error, String.t}
   def register(name, protocol, port, txts \\ []) do
     Supervisor.start_child(@name, [name, protocol, port, txts])
   end

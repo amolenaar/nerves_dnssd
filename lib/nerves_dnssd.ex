@@ -20,7 +20,7 @@ defmodule Nerves.Dnssd do
   using a follow-up number and that name will be registered, so that after a restart
   the service will advertise itself with the same name.
 
-  If you want to do more, you'll have to use the [`:dnssd`](dnssd.html) interface.
+  If you want to do more, you'll have to use the [_dnssd_ interface](dnssd.html).
   """
 
   import Supervisor.Spec, only: [supervisor: 3, worker: 3]

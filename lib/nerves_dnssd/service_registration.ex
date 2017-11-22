@@ -17,7 +17,7 @@ defmodule Nerves.Dnssd.ServiceRegistration do
   Note that this module only handles the simple case where we want to register a
   `{name, protocol, port}` tuple on a `.local` domain using the current host name.
 
-  See also: https://tools.ietf.org/html/rfc6762#section-9
+  See also: [https://tools.ietf.org/html/rfc6762#section-9](https://tools.ietf.org/html/rfc6762#section-9)
   """
   use GenServer
 

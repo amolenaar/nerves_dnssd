@@ -1,4 +1,4 @@
-# Nerves.Dnssd
+# About Nerves.Dnssd
 
 Nerves_dnssd provides an interface to Apple's Bonjour DNS Service Discovery
 implementation. Bonjour allows applications to browse, resolve and register
@@ -34,30 +34,31 @@ The examples below demonstrate how to use the service discovery interface.
 An end-to-end example can be found in the
 [demo folder](https://github.com/amolenaar/nerves_dnssd/tree/master/demo).
 
-```shell
-$ iex -S mix
-```
-
-This will start the Nerves_dnssd application and optionally an mDNS service.
-
-In the most basic situation, where one wants to simply register a service
-on the network, calling
+In the most basic situation, where you want to register a service
+on the network, simply calling
 
 ```elixir
 {:ok, pid} = Nerves.Dnssd.register("Fancy service name", "_http._tcp", 8080)
 ```
 
-is sufficient to register a HTTP service listening on port 8080. In case there is
+is sufficient to register a HTTP service listening on port 8080. This service
+(although there's no HTTP server running on this address) can be discovered on
+the network. In case there is
 already a service named "Fancy service name" a new name will be determined by
 using a follow-up number and that name will be registered, so that after a restart
 the service will advertise itself with the same name.
 
-If you want to do more, you'll have to use the [`:dnssd` interface](dnssd.html).
+`"_http._tcp"` defines the protocol used to communicate with the service. In this
+case HTTP over TCP. See [https://tools.ietf.org/html/rfc6763#section-7](https://tools.ietf.org/html/rfc6763#section-7)
+for all the details.
+
+If you want to do more than just registering a service, you'll have to use the
+[_dnssd_ interface](dnssd.html).
 
 ## License
 
 This project is distributed under the Apache License, version 2.0. The conditions can
-be found in the LICENSE file.
+be found in the [LICENSE file](https://github.com/amolenaar/nerves_dnssd/blob/master/LICENSE).
 # About Bonjour
 
 Nerves_dnssd provides an interface to Apple's DNS Service Discovery API. DNS
@@ -72,7 +73,7 @@ The DNSSD API is made available via
 [Bonjour SDK for Windows](https://connect.apple.com/cgi-bin/WebObjects/MemberSite.woa/wa/getSoftware?bundleID=20737) (free registration required).
 
 On other UNIX like platforms the DNSSD API can be made available via either
-[Apple mDNSResponder](http://svn.macosforge.org/repository/mDNSResponder/trunk/) or [Avahi](http://avahi.org) with it's optional
+Apple mDNSResponder or [Avahi](http://avahi.org) with it's optional
 Bonjour compatibilty layer. The former tends to be more commonly used on BSD
 and embedded platforms while the later is a mainstay of most Linux desktop
 operating systems. They are mostly functionally equivalent except in the area of
