@@ -30,17 +30,18 @@ defmodule Nerves.Dnssd.ServiceRegistration do
   # Server callbacks
 
   def init([name, protocol, port, txt]) do
-    {:ok, ref} = :dnssd.register(service_name(name, protocol), protocol, port, txt)
-    {:ok, {ref, name}}
+    service = {name, protocol}
+    {:ok, ref} = :dnssd.register(service_name(service), protocol, port, txt)
+    {:ok, {ref, service}}
   end
 
-  def handle_info({:dnssd, ref, {:register, :add, {registered_name, protocol, domain}}}, {ref, name} = state) do
+  def handle_info({:dnssd, ref, {:register, :add, {registered_name, protocol, domain}}}, {ref, service} = state) do
     Logger.info "Registered service '#{registered_name}' for #{protocol}#{domain}"
-    update_name name, protocol, registered_name
+    update_name service, registered_name
     {:noreply, state}
   end
 
-  def handle_info({:dnssd, ref, {:register, :remove, {registered_name, protocol, domain}}}, {ref, _name} = state) do
+  def handle_info({:dnssd, ref, {:register, :remove, {registered_name, protocol, domain}}}, {ref, _service} = state) do
     Logger.info "Deregistered service '#{registered_name}' for #{protocol}#{domain}"
     {:stop, :normal, state}
   end
@@ -50,15 +51,14 @@ defmodule Nerves.Dnssd.ServiceRegistration do
     {:noreply, state}
   end
 
-  defp service_name(name, protocol) do
-    key = {name, protocol}
-    case SystemRegistry.match(%{config: %{dnssd: %{service: %{key => :_}}}}) do
-      %{config: %{dnssd: %{service: %{^key => alt_name}}}} -> alt_name
+  defp service_name({name, _protocol} = service) do
+    case SystemRegistry.match(%{config: %{dnssd: %{service => :_}}}) do
+      %{config: %{dnssd: %{^service => alt_name}}} -> alt_name
       _ -> name
     end
   end
 
-  defp update_name(name, protocol, new_name) do
-    SystemRegistry.update [:config, :dnssd, :service, {name, protocol}], new_name
+  defp update_name(service, new_name) do
+    SystemRegistry.update [:config, :dnssd, service], new_name
   end
 end
