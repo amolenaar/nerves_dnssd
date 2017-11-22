@@ -34,13 +34,13 @@ defmodule Nerves.Dnssd.ServiceRegistration do
     {:ok, {ref, name}}
   end
 
-  def handle_info({:dnssd, ref, {:register, :add, {registered_name, protocol, domain}}}, {ref, name}=state) do
+  def handle_info({:dnssd, ref, {:register, :add, {registered_name, protocol, domain}}}, {ref, name} = state) do
     Logger.info "Registered service '#{registered_name}' for #{protocol}#{domain}"
     update_name name, protocol, registered_name
     {:noreply, state}
   end
 
-  def handle_info({:dnssd, ref, {:register, :remove, {registered_name, protocol, domain}}}, {ref, _name}=state) do
+  def handle_info({:dnssd, ref, {:register, :remove, {registered_name, protocol, domain}}}, {ref, _name} = state) do
     Logger.info "Deregistered service '#{registered_name}' for #{protocol}#{domain}"
     {:stop, :normal, state}
   end
