@@ -37,7 +37,7 @@ defmodule Nerves.Dnssd.ServiceRegistration do
 
   def handle_info({:dnssd, ref, {:register, :add, {registered_name, protocol, domain}}}, {ref, service} = state) do
     Logger.info "Registered service '#{registered_name}' for #{protocol}#{domain}"
-    update_name service, registered_name
+    update_name(service, registered_name)
     {:noreply, state}
   end
 
@@ -59,6 +59,6 @@ defmodule Nerves.Dnssd.ServiceRegistration do
   end
 
   defp update_name(service, new_name) do
-    SystemRegistry.update [:config, :dnssd, service], new_name
+    SystemRegistry.update([:config, :dnssd, service], new_name)
   end
 end
