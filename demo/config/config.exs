@@ -23,7 +23,7 @@ config :nerves_dnssd_demo,
   networking: Mix.Project.config[:target] != "host"
 
 config :nerves_dnssd,
-  daemon_restart: :transient
+  daemon_restart: :temporary
 
 config :bootloader,
   overlay_path: "/tmp/erl_bootloader",
