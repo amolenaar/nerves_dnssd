@@ -1,16 +1,24 @@
 defmodule Nerves.Dnssd.Daemon do
   @moduledoc """
-  This process starts and manages the lifecycle of the
-  mDNS "daemon".
+  This process starts and manages the lifecycle of the mDNS "daemon".
 
-  It is started as part of the `nerves_dnssd` application.
+  It is started as part of the Nerves_dnssd application.
   Via the config option `:daemon_restart` the start behaviour can be managed.
-  Default is `:permanent`. On a desktop there may already be a daemon running,
-  so a failed start should just be ignored, by either setting this property
-  to `:temporary` (try once and ignore failure) or `:ignore`. `:transient` may
-  also be set if desired, although `:permanent` is probably prefered in such
-  circumstances.
+
+  Default is restart strategy is `:permanent`. On a desktop there may already
+  be a daemon running, so a failed start should just be ignored, by either
+  setting this property to `:temporary` (try once and ignore failure) or
+  `:ignore`. To change the restart behavior, update `config/config.exs`. E.g.
+
+   ```elixir
+  config :nerves_dnssd,
+    daemon_restart: :temporary
+  ```
+
+  Setting the restart strategy to `:transient` is also an option, although
+  `:permanent` is probably prefered in such circumstances.
   """
+
   use GenServer
 
   require Logger

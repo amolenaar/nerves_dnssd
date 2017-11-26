@@ -1,13 +1,14 @@
 # About Nerves.Dnssd
 
 Nerves_dnssd provides an interface to Apple's Bonjour DNS Service Discovery
-implementation. Bonjour allows applications to browse, resolve and register
+implementation on your [Nerves](http://nerves-project.org) device. Bonjour
+allows applications to browse, resolve and register
 network services via link-local multicast DNS on the local network and via
 unicast DNS over the internet.
 
 This module is based on the [Dnssd_erlang](https://github.com/erszcz/dnssd_erlang)
-project written by [Andrew Tunnell-Jones](http://andrew.tj.id.au/),
-[Radosław Szymczyszyn](https://github.com/erszcz/dnssd_erlang) and others.
+project written by [Andrew Tunnell-Jones](https://github.com/andrewtj),
+[Radosław Szymczyszyn](https://github.com/erszcz) and others.
 
 ## Installation
 
@@ -21,6 +22,11 @@ def deps do
   [{:nerves_dnssd, "~> x.y"}]
 end
 ```
+
+This application will launch a mDNS daemon process. This can cause problems
+if you want to run the this application on your desktop. The
+[Nerves.Dnssd.Daemon documentation](Nerves.Dnssd.Daemon.html) provides
+information on handling this.
 
 If you are running Linux with Avahi you will need Avahi's Bonjour compatibility
 layer installed. If `{error,-65537}` is returned when starting an operation
