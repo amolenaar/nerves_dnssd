@@ -5,6 +5,7 @@ Below you'll find the release history of `nerves_dnssd`.
 ## 0.3.0
 
  * Added interface `Nerves.Dnssd.register()`, for straightforward persistent registration.
+ * Updated mDNSResponder to 878.1.1
  * `mdnsd` binary is now properly stripped (slimmed down).
 
 ## 0.2.0

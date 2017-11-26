@@ -9,7 +9,7 @@
 # ERL_LDFLAGS	additional linker flags for projects referencing Erlang libraries
 
 # mDNSResponder version
-VERSION = 765.50.9
+VERSION = 878.1.1
 MDNSRESPONDER_URL = https://opensource.apple.com/tarballs/mDNSResponder/mDNSResponder-$(VERSION).tar.gz
 
 UNAME = $(shell uname -s)

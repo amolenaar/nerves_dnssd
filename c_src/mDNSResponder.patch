@@ -1,12 +1,12 @@
 This patch ensures that the mDNS daemon will not fork (daemonize) and will stop
 when the port used on the Erlang side is closed.
 
---- mDNSResponder-765.50.9.orig/mDNSPosix/PosixDaemon.c	2011-12-02 01:39:45.000000000 +0100
-+++ mDNSResponder-765.50.9.new/mDNSPosix/PosixDaemon.c	2017-10-09 16:56:39.000000000 +0200
+--- mDNSResponder-878.1.1.orig/mDNSPosix/PosixDaemon.c	2017-01-11 21:40:20.000000000 +0100
++++ mDNSResponder-878.1.1.new/mDNSPosix/PosixDaemon.c	2017-11-26 15:31:03.000000000 +0100
 @@ -98,26 +98,6 @@
      mDNS_ConfigChanged(m);
  }
- 
+
 -// Do appropriate things at startup with command line arguments. Calls exit() if unhappy.
 -mDNSlocal void ParseCmdLinArgs(int argc, char **argv)
 -{
@@ -27,13 +27,13 @@ when the port used on the Erlang side is closed.
 -    }
 -}
 -
- mDNSlocal void DumpStateLog(mDNS *const m)
+ mDNSlocal void DumpStateLog()
  // Dump a little log of what we've been up to.
  {
 @@ -126,11 +106,29 @@
      LogMsg("----  END STATE LOG  ----");
  }
- 
+
 +mDNSlocal void CheckStdInClosed(int fd, short filter, void *context)
 +{
 +    int byte;
@@ -54,7 +54,7 @@ when the port used on the Erlang side is closed.
  {
      sigset_t signals;
      mDNSBool gotData = mDNSfalse;
- 
+
 +    (void) mDNSPosixAddFDToEventLoop(STDIN_FILENO, CheckStdInClosed, NULL);
 +
      mDNSPosixListenForSignalInEventLoop(SIGINT);
@@ -63,11 +63,11 @@ when the port used on the Erlang side is closed.
 @@ -172,7 +170,9 @@
  {
      mStatus err;
- 
+
 -    ParseCmdLinArgs(argc, argv);
 +    (void)argc; // Unused
 +    (void)argv; // Unused
 +    mDNS_DebugMode = mDNStrue;
- 
+
      LogMsg("%s starting", mDNSResponderVersionString);
- 
+
