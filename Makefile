@@ -81,13 +81,8 @@ $(SRC_ROOT_DIR): deps/mDNSResponder-$(VERSION).tar.gz c_src/mDNSResponder.patch
 # The daemon
 #
 
-$(BUILD_MDNSD_DIR)/mdnsd: $(BUILD_DIR)/mDNSResponder-$(VERSION)
-	make -C $(SRC_ROOT_DIR)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) STRIP="$(STRIP)" BUILDDIR=$(BUILD_MDNSD_DIR) $(TARGET_OPTS) 2>&1
-
-$(INSTALL_DIR)/priv/mdnsd: $(BUILD_MDNSD_DIR)/mdnsd
-	mkdir -p $(INSTALL_DIR)/priv
-	# Do a simple copy, since we do not want the initd script copied as well
-	cp $^ $@
+$(INSTALL_DIR)/priv/mdnsd: $(BUILD_DIR)/mDNSResponder-$(VERSION)
+	make -C $(SRC_ROOT_DIR)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) STRIP="$(STRIP)" BUILDDIR=$(INSTALL_DIR)/priv $(TARGET_OPTS) 2>&1
 
 ##
 # The port driver
