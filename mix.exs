@@ -12,6 +12,7 @@ defmodule Nerves.Dnssd.Mixfile do
      deps: deps(),
      docs: docs(),
      package: package(),
+     source_url: "https://github.com/amolenaar/nerves_dnssd",
      compilers: [:mdns_responder] ++ Mix.compilers]
   end
 
