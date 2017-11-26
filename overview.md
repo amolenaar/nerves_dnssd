@@ -59,6 +59,11 @@ If you want to do more than just registering a service, you'll have to use the
 
 This project is distributed under the Apache License, version 2.0. The conditions can
 be found in the [LICENSE file](https://github.com/amolenaar/nerves_dnssd/blob/master/LICENSE).
+
+The mDNSResponder project is also licensed under the terms of the [Apache License,
+Version 2.0](http://www.apache.org/licenses/LICENSE-2.0). The full license can be found
+[here](https://opensource.apple.com/source/mDNSResponder/mDNSResponder-878.1.1/LICENSE).
+
 # About Bonjour
 
 Nerves_dnssd provides an interface to Apple's DNS Service Discovery API. DNS
