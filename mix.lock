@@ -1,11 +1,9 @@
-%{
-  "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], []},
+%{"bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], []},
   "credo": {:hex, :credo, "0.8.10", "261862bb7363247762e1063713bb85df2bbd84af8d8610d1272cd9c1943bba63", [:mix], [{:bunt, "~> 0.2.0", [hex: :bunt, optional: false]}]},
   "dialyxir": {:hex, :dialyxir, "0.5.1", "b331b091720fd93e878137add264bac4f644e1ddae07a70bf7062c7862c4b952", [:mix], []},
   "earmark": {:hex, :earmark, "1.2.3", "206eb2e2ac1a794aa5256f3982de7a76bf4579ff91cb28d0e17ea2c9491e46a4", [:mix], []},
   "eunit_formatters": {:hex, :eunit_formatters, "0.3.1", "7a6fc351eb5b873e2356b8852eb751e20c13a72fbca03393cf682b8483509573", [:rebar3], []},
   "ex_doc": {:hex, :ex_doc, "0.18.1", "37c69d2ef62f24928c1f4fdc7c724ea04aecfdf500c4329185f8e3649c915baf", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, optional: false]}]},
   "mix_eunit": {:hex, :mix_eunit, "0.3.0", "0e3e23bbc1f428663ba6c0ce52731ea7bff381fcde1ea9198a1bd83ac26305b2", [:mix], [{:eunit_formatters, "~> 0.3.1", [hex: :eunit_formatters, optional: false]}]},
-  "system_registry": {:hex, :system_registry, "0.7.0", "cd3aaf2c15392fa60f93869dde49f536fcf60e54f3b15db737e7d4ebcac108f4", [:mix], [], "hexpm"},
-  "system_registry_term_storage": {:hex, :system_registry_term_storage, "0.1.0", "fdded792eb9b5428fa2804a50e25e7140056a48a3086b8efde77b97308236b22", [:mix], [{:system_registry, "~> 0.7", [hex: :system_registry, repo: "hexpm", optional: false]}], "hexpm"},
-}
+  "system_registry": {:hex, :system_registry, "0.7.0", "cd3aaf2c15392fa60f93869dde49f536fcf60e54f3b15db737e7d4ebcac108f4", [:mix], []},
+  "system_registry_term_storage": {:hex, :system_registry_term_storage, "0.1.0", "fdded792eb9b5428fa2804a50e25e7140056a48a3086b8efde77b97308236b22", [:mix], [{:system_registry, "~> 0.7", [hex: :system_registry, optional: false]}]}}
