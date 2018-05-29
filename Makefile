@@ -8,9 +8,8 @@
 # LDFLAGS	linker flags for linking all binaries
 # ERL_LDFLAGS	additional linker flags for projects referencing Erlang libraries
 
-# mDNSResponder version
-VERSION = 878.1.1
-MDNSRESPONDER_URL = https://opensource.apple.com/tarballs/mDNSResponder/mDNSResponder-$(VERSION).tar.gz
+MDNSRESPONDER_SVN = 878.30.4
+MDNSRESPONDER_URL = https://opensource.apple.com/tarballs/mDNSResponder/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz
 
 UNAME = $(shell uname -s)
 
@@ -40,8 +39,8 @@ endif
 CFLAGS += -fPIC
 LDFLAGS +=
 
-SRC_ROOT_DIR = $(BUILD_DIR)/mDNSResponder-$(VERSION)
 BUILD_DIR ?= _build/make
+SRC_ROOT_DIR = $(BUILD_DIR)/mDNSResponder-$(MDNSRESPONDER_SVN)
 BUILD_DRV_DIR = $(BUILD_DIR)/dnssd_drv
 BUILD_MDNSD_DIR = $(BUILD_DIR)/mdnsd
 INSTALL_DIR ?= .
@@ -53,7 +52,7 @@ ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
 ERL_LDFLAGS ?= -L$(ERL_EI_LIBDIR) -lei
 
 ###
-# from  mDNSResponder-$(VERSION)/mDNSPosix/Makefile:
+# from  mDNSResponder-$(MDNSRESPONDER_SVN)/mDNSPosix/Makefile:
 CLIENTLIBOBJS = $(BUILD_DRV_DIR)/dnssd_clientlib.c.so.o $(BUILD_DRV_DIR)/dnssd_clientstub.c.so.o $(BUILD_DRV_DIR)/dnssd_ipc.c.so.o
 
 .PHONY: all clean daemon lib driver
@@ -69,26 +68,26 @@ lib: $(BUILD_DRV_DIR)/libdns_sd.so.1
 driver: lib $(INSTALL_DIR)/priv/dnssd_drv.so
 	@echo "===> $^ installed"
 
-deps/mDNSResponder-$(VERSION).tar.gz:
-	curl $(MDNSRESPONDER_URL) -o deps/mDNSResponder-$(VERSION).tar.gz --create-dirs
+deps/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz:
+	curl $(MDNSRESPONDER_URL) -o deps/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz --create-dirs
 
-$(SRC_ROOT_DIR): deps/mDNSResponder-$(VERSION).tar.gz c_src/mDNSResponder.patch
+$(SRC_ROOT_DIR): deps/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz c_src/mDNSResponder.patch
 	mkdir -p $(BUILD_DIR)
-	tar xzf deps/mDNSResponder-$(VERSION).tar.gz -C $(BUILD_DIR)
+	tar xzf deps/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz -C $(BUILD_DIR)
 	patch -p 1 -d $(SRC_ROOT_DIR) < c_src/mDNSResponder.patch
 
 ##
 # The daemon
 #
 
-$(INSTALL_DIR)/priv/mdnsd: $(BUILD_DIR)/mDNSResponder-$(VERSION)
+$(INSTALL_DIR)/priv/mdnsd: $(SRC_ROOT_DIR)
 	make -C $(SRC_ROOT_DIR)/mDNSPosix Daemon os=$(TARGET_OS) CC=$(CC) STRIP="$(STRIP)" BUILDDIR=$(INSTALL_DIR)/priv $(TARGET_OPTS) 2>&1
 
 ##
 # The port driver
 #
 
-$(BUILD_DRV_DIR)/libdns_sd.so.1: $(BUILD_DIR)/mDNSResponder-$(VERSION)
+$(BUILD_DRV_DIR)/libdns_sd.so.1: $(SRC_ROOT_DIR)
 	make -C $(SRC_ROOT_DIR)/mDNSPosix libdns_sd os=$(TARGET_OS) CC=$(CC) STRIP="$(STRIP)" BUILDDIR=$(BUILD_DRV_DIR) OBJDIR=$(BUILD_DRV_DIR) $(TARGET_OPTS) 2>&1
 
 $(BUILD_DRV_DIR)/dnssd.o: c_src/dnssd.c
@@ -99,4 +98,4 @@ $(INSTALL_DIR)/priv/dnssd_drv.so: $(BUILD_DRV_DIR)/dnssd.o $(CLIENTLIBOBJS)
 	$(LD) $+ $(ERL_LDFLAGS) $(LDFLAGS) -o $@
 
 clean:
-	rm -rf $(BUILD_DIR)/mDNSResponder-$(VERSION) $(BUILD_DRV_DIR) $(BUILD_MDNSD_DIR)
+	rm -rf $(SRC_ROOT_DIR) $(BUILD_DRV_DIR) $(BUILD_MDNSD_DIR)
