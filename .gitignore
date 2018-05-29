@@ -17,6 +17,7 @@ erl_crash.dump
 .DS_Store
 .eunit/
 .vscode/
+.elixir_ls/
 mDNSResponder-*/
 /priv/sbin
 
