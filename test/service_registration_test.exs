@@ -48,6 +48,8 @@ defmodule ServiceRegistrationTest do
   test "register with name from system registry" do
     SystemRegistry.update [:config, :dnssd, {"Sysreg name", @protocol}], "Another name"
 
+    :timer.sleep(10)
+
     Nerves.Dnssd.register "Sysreg name", @protocol, @port
 
     {:ok, ref} = :dnssd.browse @protocol
