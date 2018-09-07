@@ -8,8 +8,8 @@
 # LDFLAGS	linker flags for linking all binaries
 # ERL_LDFLAGS	additional linker flags for projects referencing Erlang libraries
 
-MDNSRESPONDER_SVN = 878.30.4
-MDNSRESPONDER_URL = https://opensource.apple.com/tarballs/mDNSResponder/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz
+MDNSRESPONDER_VSN = 878.30.4
+MDNSRESPONDER_URL = https://opensource.apple.com/tarballs/mDNSResponder/mDNSResponder-$(MDNSRESPONDER_VSN).tar.gz
 
 UNAME = $(shell uname -s)
 
@@ -40,7 +40,7 @@ CFLAGS += -fPIC
 LDFLAGS +=
 
 BUILD_DIR ?= _build/make
-SRC_ROOT_DIR = $(BUILD_DIR)/mDNSResponder-$(MDNSRESPONDER_SVN)
+SRC_ROOT_DIR = $(BUILD_DIR)/mDNSResponder-$(MDNSRESPONDER_VSN)
 BUILD_DRV_DIR = $(BUILD_DIR)/dnssd_drv
 BUILD_MDNSD_DIR = $(BUILD_DIR)/mdnsd
 INSTALL_DIR ?= .
@@ -52,7 +52,7 @@ ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
 ERL_LDFLAGS ?= -L$(ERL_EI_LIBDIR) -lei
 
 ###
-# from  mDNSResponder-$(MDNSRESPONDER_SVN)/mDNSPosix/Makefile:
+# from  mDNSResponder-$(MDNSRESPONDER_VSN)/mDNSPosix/Makefile:
 CLIENTLIBOBJS = $(BUILD_DRV_DIR)/dnssd_clientlib.c.so.o $(BUILD_DRV_DIR)/dnssd_clientstub.c.so.o $(BUILD_DRV_DIR)/dnssd_ipc.c.so.o
 
 .PHONY: all clean daemon lib driver
@@ -68,12 +68,12 @@ lib: $(BUILD_DRV_DIR)/libdns_sd.so.1
 driver: lib $(INSTALL_DIR)/priv/dnssd_drv.so
 	@echo "===> $^ installed"
 
-deps/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz:
-	curl $(MDNSRESPONDER_URL) -o deps/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz --create-dirs
+deps/mDNSResponder-$(MDNSRESPONDER_VSN).tar.gz:
+	curl $(MDNSRESPONDER_URL) -o deps/mDNSResponder-$(MDNSRESPONDER_VSN).tar.gz --create-dirs
 
-$(SRC_ROOT_DIR): deps/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz c_src/mDNSResponder.patch
+$(SRC_ROOT_DIR): deps/mDNSResponder-$(MDNSRESPONDER_VSN).tar.gz c_src/mDNSResponder.patch
 	mkdir -p $(BUILD_DIR)
-	tar xzf deps/mDNSResponder-$(MDNSRESPONDER_SVN).tar.gz -C $(BUILD_DIR)
+	tar xzf deps/mDNSResponder-$(MDNSRESPONDER_VSN).tar.gz -C $(BUILD_DIR)
 	patch -p 1 -d $(SRC_ROOT_DIR) < c_src/mDNSResponder.patch
 
 ##
