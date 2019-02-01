@@ -3,9 +3,9 @@ defmodule Nerves.Dnssd.Mixfile do
 
   def project do
     [app: :nerves_dnssd,
-     version: "0.3.2",
+     version: "0.4.0",
      description: "Bonjour/Zeroconf DNS Service Discovery for the Nerves platform",
-     elixir: "~> 1.5",
+     elixir: "~> 1.8",
      build_embedded: true,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
@@ -22,15 +22,15 @@ defmodule Nerves.Dnssd.Mixfile do
   end
 
   defp aliases do
-    ["test": ["test", "eunit"]]
+    [test: ["test", "eunit"]]
   end
 
   defp deps do
-    [{:system_registry, "~> 0.8.0"},
+    [{:system_registry, "~> 0.8.1"},
      {:system_registry_term_storage, "~> 0.1.1"},
      {:mix_eunit, "~> 0.3.0", runtime: false},
-     {:ex_doc, "~> 0.18.3", only: :dev, runtime: false},
-     {:credo, "~> 0.9.2", only: :dev, runtime: false},
+     {:ex_doc, "~> 0.19.3", only: :dev, runtime: false},
+     {:credo, "~> 1.0", only: :dev, runtime: false},
      {:dialyxir, "~> 0.4", only: :dev, runtime: false}]
   end
 
