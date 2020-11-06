@@ -24,14 +24,14 @@ defmodule Nerves.Dnssd.Daemon do
   require Logger
 
   @doc "Start the mDNS daemon process"
-  def start_link do
-    GenServer.start_link(__MODULE__, [], [name: __MODULE__])
+  def start_link(arg) do
+    GenServer.start_link(__MODULE__, arg, name: __MODULE__)
   end
 
   ## Server callbacks
 
   @doc false
-  def init([]) do
+  def init(_arg) do
     port = Port.open({:spawn_executable, :code.priv_dir(:nerves_dnssd) ++ '/mdnsd'},
                      [:exit_status, :stderr_to_stdout, line: 256])
     {:ok, port}
