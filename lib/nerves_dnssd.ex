@@ -23,16 +23,15 @@ defmodule Nerves.Dnssd do
   If you want to do more, you'll have to use the [_dnssd_ interface](dnssd.html).
   """
 
-  import Supervisor.Spec, only: [supervisor: 3, worker: 3]
-
   def start(_type, _args) do
-
     :ok = :dnssd_drv.load()
 
-    children = daemon_worker() ++ [
-      worker(:dnssd_server, [], restart: :permanent),
-      supervisor(Nerves.Dnssd.ServiceRegistrationSup, [], restart: :permanent)
-    ]
+    children =
+      daemon_worker() ++
+        [
+          %{id: :dnssd_server, start: {:dnssd_server, :start_link, []}},
+          Nerves.Dnssd.ServiceRegistrationSup
+        ]
 
     opts = [strategy: :one_for_one, name: Nerves.Dnssd.Supervisor]
     Supervisor.start_link(children, opts)
@@ -47,12 +46,13 @@ defmodule Nerves.Dnssd do
   defp daemon_worker do
     case Application.get_env(:nerves_dnssd, :daemon_restart, :permanent) do
       :ignore ->
-         []
+        []
+
       r when r in [:permanent, :transient, :temporary] ->
-        [worker(Nerves.Dnssd.Daemon, [], restart: r)]
+        [Supervisor.child_spec(Nerves.Dnssd.Daemon, restart: r)]
+
       other ->
         raise "Invalid Nerves Dnssd daemon start policy #{other}, should be one of :ignore, :permanent, :transient or :temporary."
     end
   end
-
 end

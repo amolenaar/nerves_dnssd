@@ -3,12 +3,12 @@ defmodule Nerves.Dnssd.ServiceRegistrationSup do
   Supervisor for service registrations.
   """
 
-  use Supervisor
+  use DynamicSupervisor
 
   @name __MODULE__
 
-  def start_link() do
-    Supervisor.start_link(__MODULE__, [], name: @name)
+  def start_link(arg) do
+    DynamicSupervisor.start_link(__MODULE__, arg, name: @name)
   end
 
   @doc """
@@ -19,11 +19,14 @@ defmodule Nerves.Dnssd.ServiceRegistrationSup do
   """
   @spec register(String.t, String.t, non_neg_integer, [String.t]) :: {:ok, pid} | {:error, String.t}
   def register(name, protocol, port, txts \\ []) do
-    Supervisor.start_child(@name, [name, protocol, port, txts])
+    DynamicSupervisor.start_child(
+      @name,
+      {Nerves.Dnssd.ServiceRegistration, {name, protocol, port, txts}}
+    )
   end
 
-  def init([]) do
+  def init(_arg) do
     SystemRegistry.TermStorage.persist [:config, :dnssd]
-    Supervisor.init([Nerves.Dnssd.ServiceRegistration], strategy: :simple_one_for_one)
+    DynamicSupervisor.init(strategy: :one_for_one)
   end
 end

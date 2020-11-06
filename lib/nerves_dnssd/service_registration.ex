@@ -23,7 +23,7 @@ defmodule Nerves.Dnssd.ServiceRegistration do
 
   require Logger
 
-  def start_link([], name, protocol, port, txt) do
+  def start_link({name, protocol, port, txt}) do
     GenServer.start_link(__MODULE__, [name, protocol, port, txt])
   end
 
